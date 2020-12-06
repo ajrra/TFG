@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">TFG</string>
+    <string name="button1">Nueva Encuesta</string>
+    <string name="button2">Analizar Encuesta</string>
+    <string name="button3">Ver Encuestas</string>
+    <string name="buttonTakePhoto">Camara</string>
+</resources>

@@ -89,7 +89,7 @@ public class PaperIdentification extends AppCompatActivity {
         if(puntos !=null) {
             ArrayList<MatOfPoint> contour = new ArrayList<MatOfPoint>();
             contour.add(puntos.contour);
-            Imgproc.drawContours(mRgba, contours, -1,  new Scalar(0, 0, 255, 255),50);
+            Imgproc.drawContours(mRgba, contours, -1,  new Scalar(0, 255, 0, 255),50);
 
         }
 

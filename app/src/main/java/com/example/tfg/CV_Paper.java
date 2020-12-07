@@ -1,10 +1,16 @@
 package com.example.tfg;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import org.opencv.android.Utils;
+import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
@@ -31,7 +37,24 @@ public class CV_Paper {
 
     public static Quadrilateral findDocument( Mat inputRgba ) {
         ArrayList<MatOfPoint> contours = findContours(inputRgba);
-        Quadrilateral quad = getQuadrilateral(contours);
+        Quadrilateral quad = getQuadrilateral(contours,inputRgba.cols()*inputRgba.rows());
+
+
+        //DEBUGGING CODE PARA VER EL BITMAP EN ANDROID STUDIO
+        double ratio = inputRgba.size().height / 800;
+        int height = Double.valueOf(inputRgba.size().height / ratio).intValue();
+        int width = Double.valueOf(inputRgba.size().width / ratio).intValue();
+        Size size = new Size(width,height);
+        Mat resizedImage = new Mat(size, CvType.CV_8UC4);
+        Imgproc.resize(inputRgba,resizedImage,size);
+        Bitmap a =Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        ArrayList<MatOfPoint>aa = new ArrayList<MatOfPoint>();
+        aa.add(quad.contour);
+        Imgproc.drawContours(resizedImage, aa, -1,  new Scalar(0, 0, 255, 255),50);
+        Utils.matToBitmap(resizedImage,a);
+
+
+
         return quad;
     }
 
@@ -41,29 +64,36 @@ public class CV_Paper {
         int height = Double.valueOf(src.size().height / ratio).intValue();
         int width = Double.valueOf(src.size().width / ratio).intValue();
         Size size = new Size(width,height);
-
+        Bitmap a =Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);;
         Mat resizedImage = new Mat(size, CvType.CV_8UC4);
         Mat grayImage = new Mat(size, CvType.CV_8UC4);
         Mat cannedImage = new Mat(size, CvType.CV_8UC1);
         //NUEVO TAMAÑO PARA TRABAJAR
         Imgproc.resize(src,resizedImage,size);
+        Utils.matToBitmap(resizedImage,a);
         //APLICAMOS UN FILTRO QUE MANTENGA BORDES
-        Imgproc.bilateralFilter(resizedImage,grayImage,9,75,75);
+        Imgproc.cvtColor(resizedImage, resizedImage, Imgproc.COLOR_RGBA2BGR);
+        Mat dst = resizedImage.clone();
+        Imgproc.bilateralFilter(resizedImage, dst, 15, 80, 80, Core.BORDER_DEFAULT);
+        Imgproc.cvtColor(dst, dst, Imgproc.COLOR_RGB2RGBA);
         //PASAMOS A GRIS PARA TRABAJAR MEJOR
-        Imgproc.cvtColor(grayImage, grayImage, Imgproc.COLOR_RGBA2GRAY, 4);
-
+        Imgproc.cvtColor(dst, grayImage, Imgproc.COLOR_RGBA2GRAY, 1);
+        Utils.matToBitmap(grayImage,a);
         //APLICAMOS UN THRESHOLD ADAPTATIVO PARA ELIMINAR SOMBRAS
         Imgproc.adaptiveThreshold(grayImage,grayImage,255,Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,Imgproc.THRESH_BINARY,115,4);
+        Utils.matToBitmap(grayImage,a);
         //APLICAMOS UNA DIFUMINACION PARA MEJORAR
-        Imgproc.GaussianBlur(grayImage, grayImage, new Size(5, 5), 0);
+        Imgproc.medianBlur(grayImage, grayImage, 11);
+        Utils.matToBitmap(grayImage,a);
         //ALGORITMO CANNY DE DETECCION DE BORDES
         Imgproc.Canny(grayImage, cannedImage, 75, 200);
-
+        Utils.matToBitmap(cannedImage,a);
         ArrayList<MatOfPoint> contours = new ArrayList<MatOfPoint>();
         Mat hierarchy = new Mat();
 
-        Imgproc.findContours(cannedImage, contours, hierarchy, Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
-
+        Imgproc.findContours(cannedImage, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+        Imgproc.drawContours(resizedImage, contours, -1,  new Scalar(0, 0, 255, 255));
+        Utils.matToBitmap(resizedImage,a);
         hierarchy.release();
 
         Collections.sort(contours, new Comparator<MatOfPoint>() {
@@ -81,8 +111,9 @@ public class CV_Paper {
         return contours;
     }
 
-    private static Quadrilateral getQuadrilateral(ArrayList<MatOfPoint> contours) {
-
+    private static Quadrilateral getQuadrilateral(ArrayList<MatOfPoint> contours,double MAX_CONTOUR_AREA) {
+        double max_area_found = 0;
+        Quadrilateral out =null;
         for ( MatOfPoint c: contours ) {
             MatOfPoint2f c2f = new MatOfPoint2f(c.toArray());
             double peri = Imgproc.arcLength(c2f, true);
@@ -92,14 +123,14 @@ public class CV_Paper {
             Point[] points = approx.toArray();
 
             // select biggest 4 angles polygon
-            if (points.length == 4) {
+            if (points.length == 4 && Imgproc.contourArea(c) > max_area_found && Imgproc.contourArea(c) < MAX_CONTOUR_AREA  ) {
                 Point[] foundPoints = sortPoints(points);
 
-                return new Quadrilateral(c, foundPoints);
+                out= new Quadrilateral(c, foundPoints);
             }
         }
 
-        return null;
+        return out;
     }
 
     private static Point[] sortPoints(Point[] src) {

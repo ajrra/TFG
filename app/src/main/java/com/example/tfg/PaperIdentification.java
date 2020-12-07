@@ -15,10 +15,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.OpenCVLoader;
 
-import org.opencv.core.CvException;
+import org.opencv.android.Utils;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.Scalar;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -30,7 +35,7 @@ public class PaperIdentification extends AppCompatActivity {
     Bitmap img;
 
 
-    private Mat                    mRgba;
+    private Mat mRgba;
     private Mat                    mIntermediateMat;
     private Mat                    mGray;
     Mat hierarchy;
@@ -76,15 +81,20 @@ public class PaperIdentification extends AppCompatActivity {
 
 
     private Bitmap findEdges(Bitmap map){
-        mRgba = new Mat(map.getHeight(),map.getWidth(), CvType.CV_8UC1);
-       new CV_Paper.Quadrilateral Puntos = CV_Paper
-        try {
+        mRgba = new Mat(map.getHeight(),map.getWidth(), CvType.CV_8UC4);
+        Size s_mRgba = mRgba.size();
+        Bitmap tmp = map.copy(Bitmap.Config.ARGB_8888,true);
+        Utils.bitmapToMat(tmp, mRgba);
+        CV_Paper.Quadrilateral puntos = CV_Paper.findDocument(mRgba);
+        if(puntos !=null) {
+            ArrayList<MatOfPoint> contour = new ArrayList<MatOfPoint>();
+            contour.add(puntos.contour);
+            Imgproc.drawContours(mRgba, contours, -1,  new Scalar(0, 0, 255, 255),50);
 
-
-        }catch (CvException ex){
-            Log.d("PAPER", "findEdges: fail");
         }
 
+        Imgproc.resize(mRgba,mRgba,s_mRgba);
+        Utils.matToBitmap(mRgba,map);
         return map;
 
 

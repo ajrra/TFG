@@ -31,6 +31,8 @@
         </activity>
         <activity android:name=".PaperActivity" />
         <activity android:name=".PaperIdentification" />
+        <activity android:name=".plantillaActivity"/>
+        <activity android:name=".PerspectiveAdjustedActivity" />
     </application>
     <!--Declaring the required permissions-->
     <uses-permission

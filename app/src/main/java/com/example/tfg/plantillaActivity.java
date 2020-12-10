@@ -1,9 +1,12 @@
 package com.example.tfg;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,6 +15,7 @@ import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
 import org.opencv.android.JavaCameraView;
 import org.opencv.android.OpenCVLoader;
+import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
@@ -55,7 +59,17 @@ public class plantillaActivity extends AppCompatActivity implements CameraBridge
         mOpenCvCameraView = (JavaCameraView) findViewById(R.id.show_camera_activity_java_surface_view);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
-
+        Button nextButton = (Button) this.findViewById(R.id.button);
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mRGBAT!=null){
+                    Intent next = new Intent(getApplicationContext(),PaperIdentification.class);
+                    next.putExtra("image",mRGBAT.nativeObj);
+                    startActivity(next);
+                }
+            }
+        });
     }
 
     @Override
@@ -71,10 +85,16 @@ public class plantillaActivity extends AppCompatActivity implements CameraBridge
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         mRGBA = inputFrame.rgba();
-        mRGBAT = mRGBA.t();
-        Imgproc.resize(mRGBAT, mRGBAT, mRGBA.size());
+        mRGBAT = mRGBA.clone();
+        Core.flip(mRGBA,mRGBAT,-1);
+        Mat tmp = mRGBAT.clone();
+        tmp = CV_Paper.preprocess(tmp);
+        mRGBAT = CV_Paper.houghFind(mRGBAT,tmp);
         return mRGBAT;
     }
+
+
+
 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {

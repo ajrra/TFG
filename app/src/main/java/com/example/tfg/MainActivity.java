@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 Log.i("MainActivity", "called onClick");
-                Intent i = new Intent(getApplicationContext(),PaperActivity.class);
+                Intent i = new Intent(getApplicationContext(),plantillaActivity.class);
                 startActivity(i);
             }
         });

@@ -66,7 +66,7 @@ public class PaperIdentification extends AppCompatActivity {
         Bundle extras = this.getIntent().getExtras();
         imagePath = extras.getString("image");
         Quadrilateral quad =CV_Paper.findEdges((Bitmap) BitmapFactory.decodeFile(imagePath));
-        img = quad.img.copy(img.getConfig(),true);
+       //   img = quad.copy(img.getConfig(),true);
         imageView.setImageBitmap(img);
 
     }

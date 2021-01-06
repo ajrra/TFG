@@ -9,12 +9,14 @@ import androidx.room.PrimaryKey;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.opencv.android.Utils;
+import org.opencv.calib3d.Calib3d;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
@@ -36,6 +38,57 @@ public class CV_Paper {
 
 
 
+    public static boolean CompareMatEntry(Mat src, Mat comp){
+        
+
+
+        return false;
+    }
+
+
+
+    public static Mat preprocess(Mat src){
+        Imgproc.cvtColor(src, src, Imgproc.COLOR_RGBA2BGR);
+        Size size = src.size();
+        Mat grayImage = new Mat(size, CvType.CV_8UC4);
+        Mat cannedImage = new Mat(size, CvType.CV_8UC1);
+
+        //APLICAMOS UN FILTRO QUE MANTENGA BORDES
+        Imgproc.cvtColor(src, grayImage, Imgproc.COLOR_RGBA2BGR);
+        Mat dst = grayImage.clone();
+        Imgproc.bilateralFilter(grayImage, dst, 9, 75, 75, Core.BORDER_DEFAULT);
+        Imgproc.cvtColor(dst, dst, Imgproc.COLOR_RGB2RGBA);
+        //PASAMOS A GRIS PARA TRABAJAR MEJOR
+        Imgproc.cvtColor(dst, grayImage, Imgproc.COLOR_RGBA2GRAY, 4);
+
+        //APLICAMOS UN THRESHOLD ADAPTATIVO PARA ELIMINAR SOMBRAS
+        Imgproc.adaptiveThreshold(grayImage,grayImage,255,Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,Imgproc.THRESH_BINARY,115,4);
+
+        //APLICAMOS UNA DIFUMINACION PARA MEJORAR
+        Imgproc.GaussianBlur(grayImage,grayImage,new Size(5,5),0);
+        Imgproc.dilate(grayImage,grayImage, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3,3)));
+        Core.copyMakeBorder(grayImage,grayImage,5,5,5,5,Core.BORDER_CONSTANT);
+        //ALGORITMO CANNY DE DETECCION DE BORDES
+        Imgproc.Canny(grayImage, cannedImage, 200, 250);
+
+        return cannedImage;
+    }
+
+    public static ArrayList<MatOfPoint> findCountour(Mat src){
+        ArrayList<MatOfPoint> contours = new ArrayList<MatOfPoint>();
+        Mat hierarchy = new Mat();
+
+        Imgproc.findContours(src, contours, hierarchy, Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+        Collections.sort(contours, new Comparator<MatOfPoint>() {
+
+            @Override
+            public int compare(MatOfPoint lhs, MatOfPoint rhs) {
+                return Double.valueOf(Imgproc.contourArea(lhs)).compareTo(Imgproc.contourArea(rhs));
+            }
+        });
+
+        return  contours;
+    }
 
      public static Quadrilateral findEdges(Bitmap map){
 
@@ -60,7 +113,6 @@ public class CV_Paper {
 
         Imgproc.resize(mResize,mRgba,s_mRgba);
         Utils.matToBitmap(mRgba,map);
-        puntos.img=map;
         return puntos;
 
 
@@ -75,62 +127,21 @@ public class CV_Paper {
         return quad;
     }
 
-    public static Mat preprocess(Mat src){
-        Size size = src.size();
-        Mat grayImage = new Mat(size, CvType.CV_8UC4);
-        Mat cannedImage = new Mat(size, CvType.CV_8UC1);
-
-        //APLICAMOS UN FILTRO QUE MANTENGA BORDES
-        Imgproc.cvtColor(src, grayImage, Imgproc.COLOR_RGBA2BGR);
-        Mat dst = grayImage.clone();
-        Imgproc.bilateralFilter(grayImage, dst, 9, 75, 75, Core.BORDER_DEFAULT);
-        Imgproc.cvtColor(dst, dst, Imgproc.COLOR_RGB2RGBA);
-        //PASAMOS A GRIS PARA TRABAJAR MEJOR
-        Imgproc.cvtColor(dst, grayImage, Imgproc.COLOR_RGBA2GRAY, 4);
-
-        //APLICAMOS UN THRESHOLD ADAPTATIVO PARA ELIMINAR SOMBRAS
-        Imgproc.adaptiveThreshold(grayImage,grayImage,255,Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,Imgproc.THRESH_BINARY,115,4);
-
-        //APLICAMOS UNA DIFUMINACION PARA MEJORAR
-        Imgproc.medianBlur(grayImage, grayImage, 11);
-        Imgproc.dilate(grayImage,grayImage, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3,3)));
-
-        //ALGORITMO CANNY DE DETECCION DE BORDES
-        Imgproc.Canny(grayImage, cannedImage, 200, 250);
-
-        return cannedImage;
-    }
-
-   public static Quadrilateral houghQuad(Mat src){
-         Quadrilateral quad = null;
-
-         return quad;
-
-   }
-
-
 
     public static Mat perspectiveAdjust(Mat src, Quadrilateral quad){
-         Mat pts1,pts2,M;
-         ArrayList<Point> pt1 = new ArrayList<>();
-        ArrayList<Point> pt2 = new ArrayList<>();
-         for (Point a : quad.points){
-             pt1.add(a);
-         }
-         pt2.add(new Point(src.height(),0));
-         pt2.add(new Point(src.height(),src.width()));
-         pt2.add(new Point(0,src.width()));
-         pt2.add(new Point(0,0));
-
-         pts1=Converters.vector_Point2d_to_Mat(pt1);
-         pts2=Converters.vector_Point2d_to_Mat(pt2);
+         Mat M;
+        Point[] p1 = quad.points;
+        Point[] p2 = {new Point(0, 0), new Point(0, src.height()),new Point(src.width(), src.height()), new Point(src.width(), 0)};
+        p2=sortPoints(p2);
+        MatOfPoint2f pts1 = new MatOfPoint2f(p1[0],p1[1],p1[2],p1[3]);
+        MatOfPoint2f pts2 = new MatOfPoint2f(p2[0],p2[1],p2[2],p2[3]);
          M=Imgproc.getPerspectiveTransform(pts1,pts2);
          Imgproc.warpPerspective(src,src,M,src.size());
         return src;
     }
 
 
-   public static Mat houghFind(Mat dst,Mat src){
+  /* public static Mat houghFind(Mat dst,Mat src){
          Quadrilateral tmp = null;
          Mat cdst = dst.clone();
          Mat lines = new Mat();
@@ -145,67 +156,18 @@ public class CV_Paper {
            Point pt2 = new Point(Math.round(x0 - 1000*(-b)), Math.round(y0 - 1000*(a)));
            Imgproc.line(cdst, pt1, pt2, new Scalar(0, 0, 255), 3, Imgproc.LINE_AA, 0);
        }
-
-
        return cdst;
    }
 
-
+*/
 
     private static ArrayList<MatOfPoint> findContours(Mat resizedImage, Size size) {
 
-        Bitmap a =Bitmap.createBitmap((int)size.width, (int)size.height, Bitmap.Config.ARGB_8888);;
-
-        Mat grayImage = new Mat(size, CvType.CV_8UC4);
-        Mat cannedImage = new Mat(size, CvType.CV_8UC1);
-
-      Utils.matToBitmap(resizedImage,a);
-        //APLICAMOS UN FILTRO QUE MANTENGA BORDES
-        Imgproc.cvtColor(resizedImage, resizedImage, Imgproc.COLOR_RGBA2BGR);
-        Mat dst = resizedImage.clone();
-        Imgproc.bilateralFilter(resizedImage, dst, 9, 75, 75, Core.BORDER_DEFAULT);
-        Imgproc.cvtColor(dst, dst, Imgproc.COLOR_RGB2RGBA);
-        //PASAMOS A GRIS PARA TRABAJAR MEJOR
-        Imgproc.cvtColor(dst, grayImage, Imgproc.COLOR_RGBA2GRAY, 1);
-        Utils.matToBitmap(grayImage,a);
-        //APLICAMOS UN THRESHOLD ADAPTATIVO PARA ELIMINAR SOMBRAS
-        Imgproc.adaptiveThreshold(grayImage,grayImage,255,Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,Imgproc.THRESH_BINARY,115,4);
-        Utils.matToBitmap(grayImage,a);
-        //APLICAMOS UNA DIFUMINACION PARA MEJORAR
-        Imgproc.medianBlur(grayImage, grayImage, 11);
-        Utils.matToBitmap(grayImage,a);
-        //ALGORITMO CANNY DE DETECCION DE BORDES
-        Imgproc.Canny(grayImage, cannedImage, 200, 250);
-      //  Mat h_lines = new Mat(size, CvType.CV_8UC1);
-      //  Imgproc.HoughLines(cannedImage,h_lines,1, Math.PI/180, 250);
 
 
-      //  Utils.matToBitmap(cannedImage,a);
-        ArrayList<MatOfPoint> contours = new ArrayList<MatOfPoint>();
-        Mat hierarchy = new Mat();
-
-        Imgproc.findContours(cannedImage, contours, hierarchy, Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
-        Collections.sort(contours, new Comparator<MatOfPoint>() {
-
-            @Override
-            public int compare(MatOfPoint lhs, MatOfPoint rhs) {
-                return Double.valueOf(Imgproc.contourArea(lhs)).compareTo(Imgproc.contourArea(rhs));
-            }
-        });
-
-
-
-        Quadrilateral quad = getQuadrilateral(contours,size);
-        ArrayList<MatOfPoint>aa = new ArrayList<MatOfPoint>();
-        aa.add(quad.contour);
-        Imgproc.drawContours(resizedImage, aa, -1,  new Scalar(0, 255,0 , 255));
-        Utils.matToBitmap(resizedImage,a);
-        hierarchy.release();
-        resizedImage.release();
-        grayImage.release();
-        cannedImage.release();
-
-        return contours;
+        resizedImage = preprocess(resizedImage);
+        ArrayList<MatOfPoint> con = findCountour(resizedImage);
+        return con;
     }
 
     @Nullable
@@ -214,12 +176,12 @@ public class CV_Paper {
             MatOfPoint2f c2f = new MatOfPoint2f(c.toArray());
             double peri = Imgproc.arcLength(c2f, true);
             MatOfPoint2f approx = new MatOfPoint2f();
-            Imgproc.approxPolyDP(c2f, approx, 0.02 * peri, true);
+            Imgproc.approxPolyDP(c2f, approx, 0.03 * peri, true);
 
             Point[] points = approx.toArray();
 
             // select biggest 4 angles polygon
-            if (points.length == 4) {
+            if (points.length == 4 && Imgproc.isContourConvex(new MatOfPoint(approx.toArray()))) {
                 Point[] foundPoints = sortPoints(points);
                 if(insideArea(foundPoints,srcSize))
                 return new Quadrilateral(c, foundPoints);

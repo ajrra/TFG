@@ -40,7 +40,11 @@ public class CV_Paper {
 
     public static boolean CompareMatEntry(Mat src, Mat comp){
         
-
+        Mat tmp_1= preprocess(src);
+        Mat tmp_2= preprocess(comp);
+        Mat tmp_3 = new Mat();
+        Core.absdiff(tmp_1,tmp_2,tmp_3);
+        double val = Core.countNonZero(tmp_3)*100/tmp_3.size().area();
 
         return false;
     }
@@ -75,17 +79,11 @@ public class CV_Paper {
     }
 
     public static ArrayList<MatOfPoint> findCountour(Mat src){
-        ArrayList<MatOfPoint> contours = new ArrayList<MatOfPoint>();
+        ArrayList<MatOfPoint> contours = new ArrayList<>();
         Mat hierarchy = new Mat();
 
         Imgproc.findContours(src, contours, hierarchy, Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
-        Collections.sort(contours, new Comparator<MatOfPoint>() {
-
-            @Override
-            public int compare(MatOfPoint lhs, MatOfPoint rhs) {
-                return Double.valueOf(Imgproc.contourArea(lhs)).compareTo(Imgproc.contourArea(rhs));
-            }
-        });
+        Collections.sort(contours, (lhs, rhs) -> Double.valueOf(Imgproc.contourArea(lhs)).compareTo(Imgproc.contourArea(rhs)));
 
         return  contours;
     }
@@ -106,7 +104,7 @@ public class CV_Paper {
         Quadrilateral puntos = CV_Paper.findDocument(mResize,size);
 
         if(puntos !=null) {
-            ArrayList<MatOfPoint> contour = new ArrayList<MatOfPoint>();
+            ArrayList<MatOfPoint> contour = new ArrayList<>();
             contour.add(puntos.contour);
             Imgproc.drawContours(mResize, contour, -1,  new Scalar(0, 255, 0, 255),50);
         }
@@ -122,9 +120,9 @@ public class CV_Paper {
     public static Quadrilateral findDocument( Mat inputRgba,Size size ) {
 
         ArrayList<MatOfPoint> contours = findContours(inputRgba,size);
-        Quadrilateral quad = getQuadrilateral(contours,size);
+       return getQuadrilateral(contours,size);
 
-        return quad;
+
     }
 
 

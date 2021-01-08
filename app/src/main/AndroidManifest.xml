@@ -9,7 +9,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.TFG">
-        >
+
         <provider
             android:authorities="com.example.tfg.fileprovider"
             android:name="androidx.core.content.FileProvider"

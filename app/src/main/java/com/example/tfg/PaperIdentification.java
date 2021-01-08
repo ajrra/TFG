@@ -62,7 +62,7 @@ public class PaperIdentification extends AppCompatActivity {
             OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_12, this, baseLoaderCallback);
         }
         setContentView(R.layout.show_paper_id);
-        this.imageView = (ImageView)this.findViewById(R.id.imageView2);
+        this.imageView = (ImageView)this.findViewById(R.id.imageSingle);
         Bundle extras = this.getIntent().getExtras();
         imagePath = extras.getString("image");
         Quadrilateral quad =CV_Paper.findEdges((Bitmap) BitmapFactory.decodeFile(imagePath));

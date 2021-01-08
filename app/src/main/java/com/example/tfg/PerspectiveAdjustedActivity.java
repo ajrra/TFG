@@ -17,14 +17,15 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.ortiz.touchview.TouchImageView;
+
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 
 public class PerspectiveAdjustedActivity extends AppCompatActivity {
 
-    private ImageView imageView;
-    private ScaleGestureDetector scaleGestureDetector;
-    private float mScaleFactor = 1.0f;
+    private TouchImageView imageView;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,8 +33,7 @@ public class PerspectiveAdjustedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.show_paper_id);
-        setContentView(R.layout.show_paper_id);
-        this.imageView = (ImageView)this.findViewById(R.id.imageView2);
+        this.imageView = this.findViewById(R.id.imageSingle);
         Bundle extras = this.getIntent().getExtras();
         long imagePath = extras.getLong("image");
         Mat tempImg = new Mat( imagePath );
@@ -41,22 +41,7 @@ public class PerspectiveAdjustedActivity extends AppCompatActivity {
         Bitmap bm = Bitmap.createBitmap(m.cols(), m.rows(),Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(m, bm);
         imageView.setImageBitmap(bm);
-        scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
-    }
-    @Override
-    public boolean onTouchEvent(MotionEvent motionEvent) {
-        scaleGestureDetector.onTouchEvent(motionEvent);
-        return true;
-    }
-    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
-        @Override
-        public boolean onScale(ScaleGestureDetector scaleGestureDetector) {
-            mScaleFactor *= scaleGestureDetector.getScaleFactor();
-            mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 10.0f));
-            imageView.setScaleX(mScaleFactor);
-            imageView.setScaleY(mScaleFactor);
-            return true;
-        }
+
     }
 
 }

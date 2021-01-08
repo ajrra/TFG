@@ -1,16 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/imageView2"
+    <com.ortiz.touchview.TouchImageView
+        android:id="@+id/imageSingle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/ic_launcher_foreground"
-        android:scaleType="matrix"
-        />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:src="@drawable/ic_launcher_foreground" />
+
+    <LinearLayout
+        android:id="@+id/top_text_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/white"
+        android:padding="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="3dp"
+            android:paddingRight="3dp"
+            android:text="@string/hide_bottom_view_on_scroll_behavior" />
+
+        <TextView
+            android:id="@+id/scroll_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</RelativeLayout>

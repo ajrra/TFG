@@ -37,7 +37,7 @@ public class CV_Paper {
 
 
 
-
+//Compara la version pre procesada de las dos matrices para
     public static boolean CompareMatEntry(Mat src, Mat comp){
         
         Mat tmp_1= preprocess(src);
@@ -45,8 +45,8 @@ public class CV_Paper {
         Mat tmp_3 = new Mat();
         Core.absdiff(tmp_1,tmp_2,tmp_3);
         double val = Core.countNonZero(tmp_3)*100/tmp_3.size().area();
+        return val > 90;
 
-        return false;
     }
 
 

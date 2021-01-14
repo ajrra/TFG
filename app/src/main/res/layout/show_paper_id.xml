@@ -1,36 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
 
-    <com.ortiz.touchview.TouchImageView
-        android:id="@+id/imageSingle"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/ic_launcher_foreground" />
-
-    <LinearLayout
-        android:id="@+id/top_text_line"
+    <Button
+        android:id="@+id/button5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:background="@android:color/white"
-        android:padding="5dp">
+        android:text="Button" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingEnd="3dp"
-            android:paddingRight="3dp"
-            android:text="@string/hide_bottom_view_on_scroll_behavior" />
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/scroll_position"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <com.example.tfg.Views.RectSubSamplingScaleImage
+            android:id="@+id/imageSingle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_launcher_foreground" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
-</RelativeLayout>
+</LinearLayout>

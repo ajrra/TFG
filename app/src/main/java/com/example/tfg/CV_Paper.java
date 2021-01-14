@@ -1,26 +1,18 @@
 package com.example.tfg;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
-
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.opencv.android.Utils;
-import org.opencv.calib3d.Calib3d;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
-import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.utils.Converters;
 
 import java.util.ArrayList;
 import java.util.Arrays;

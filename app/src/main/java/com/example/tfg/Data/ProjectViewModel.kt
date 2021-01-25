@@ -9,13 +9,16 @@ import kotlinx.coroutines.launch
 
  class ProjectViewModel(application: Application): AndroidViewModel(application) {
     private val  allData : LiveData<List<Project>>
+    private val allPage : LiveData<List<Page>>
     private val repository : ProjectRepository
 
     init{
-        val userDao = ProjectDatabase.getDatabase(application).projectDao()
-        repository = ProjectRepository(userDao)
+        val database =ProjectDatabase.getDatabase(application)
+        val projectDao = database.projectDao()
+        val pageDao = database.pageDao()
+        repository = ProjectRepository(projectDao,pageDao)
         allData = repository.getAllProjects
-
+        allPage= repository.getAllPages
     }
 
     fun addProject(project: Project){
@@ -24,4 +27,9 @@ import kotlinx.coroutines.launch
         }
 
     }
+     fun addPage(page:Page){
+         viewModelScope.launch(Dispatchers.IO) { repository.addPage(page) }
+
+     }
+
 }

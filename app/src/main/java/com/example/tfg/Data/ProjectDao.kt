@@ -16,4 +16,6 @@ interface ProjectDao {
 
     @Query("SELECT * FROM project_table")
     fun getAllProjects(): LiveData<List<Project>>
+
+
 }

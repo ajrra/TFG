@@ -5,22 +5,20 @@ import android.graphics.RectF;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
-import androidx.room.TypeConverter;
 import androidx.room.TypeConverters;
-
-import org.opencv.core.Mat;
-import org.opencv.utils.Converters;
 
 import java.util.ArrayList;
 
-@Entity(tableName = "project_table")
-public class Project  {
-
+@Entity(tableName = "page_table", foreignKeys = {@ForeignKey(entity = Project.class,
+        parentColumns = "id",
+        childColumns = "Project_fk")}  )
+public class Page{
     @PrimaryKey(autoGenerate = true)
     public int id;
-    @Ignore
-    public ArrayList<Page> pages;
-}
+    @ColumnInfo(name = "Project_fk")
+    public int Project_fk;
+    // public Mat img;
 
+    public ArrayList<RectF> quizL;
+}

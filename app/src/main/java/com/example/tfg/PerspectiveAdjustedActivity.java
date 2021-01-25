@@ -3,6 +3,8 @@ package com.example.tfg;
 
 import android.graphics.Bitmap;
 
+import com.example.tfg.Data.Page;
+import com.example.tfg.Data.Project;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.Bundle;
@@ -19,7 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
-import com.example.tfg.Data.*;
+import com.example.tfg.Data.ProjectViewModel;
 import com.example.tfg.Views.RectSubSamplingScaleImage;
 
 import org.opencv.android.Utils;
@@ -34,11 +36,12 @@ public class PerspectiveAdjustedActivity extends AppCompatActivity {
     private PointF topL, botR;
     private RectSubSamplingScaleImage imageView;
     private int count =0;
-    private ProjectViewModel mUserViewModel;
+    private ProjectViewModel mProjectViewModel;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         quizL=new ArrayList<>();
-        mUserViewModel = new ViewModelProvider(this).get(ProjectViewModel.class);
+
+
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.show_paper_id);
@@ -53,10 +56,13 @@ public class PerspectiveAdjustedActivity extends AppCompatActivity {
                 imageView.invalidate();
             }
         });
+        Button but2 = this.findViewById(R.id.button5);
+        but2.setOnClickListener(new SaveButtonClick());
+
         Bitmap bm = Bitmap.createBitmap(m.cols(), m.rows(),Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(m, bm);
 
-
+        mProjectViewModel = new ViewModelProvider(this).get(ProjectViewModel.class);
         imageView = (RectSubSamplingScaleImage) this.findViewById(R.id.imageSingle);
         imageView.rectangles=quizL;
 
@@ -88,12 +94,7 @@ public class PerspectiveAdjustedActivity extends AppCompatActivity {
             }
         });
         imageView.setImage(ImageSource.bitmap(bm));
-        imageView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return gestureDetector.onTouchEvent(motionEvent);
-            }
-        });
+        imageView.setOnTouchListener((view, motionEvent) -> gestureDetector.onTouchEvent(motionEvent));
 
 
 
@@ -108,9 +109,19 @@ private void addRect(){
 }
 
 
-private void save(){
- Project nProject = new Project();
-}
+    class SaveButtonClick implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            Project nProject = new Project();
+            Page page = new Page();
+            //page.quizL= this.quizL;
+            mProjectViewModel.addPage(page);
+        }
+    }
+
+
+
+
 
 
 }

@@ -18,7 +18,6 @@ public class Page{
     public int id;
     @ColumnInfo(name = "Project_fk")
     public int Project_fk;
-    // public Mat img;
-
+    public String img;
     public ArrayList<RectF> quizL;
 }

@@ -34,6 +34,7 @@ public class PerspectiveAdjustedActivity extends AppCompatActivity {
 
     private ArrayList<RectF> quizL;
     private Mat m;
+    private Bitmap bm;
     private PointF topL, botR;
     private RectSubSamplingScaleImage imageView;
     private int count =0;
@@ -60,7 +61,7 @@ public class PerspectiveAdjustedActivity extends AppCompatActivity {
         Button but2 = this.findViewById(R.id.button5);
         but2.setOnClickListener(new SaveButtonClick());
 
-        Bitmap bm = Bitmap.createBitmap(m.cols(), m.rows(),Bitmap.Config.ARGB_8888);
+         bm = Bitmap.createBitmap(m.cols(), m.rows(),Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(m, bm);
 
         mProjectViewModel = new ViewModelProvider(this).get(ProjectViewModel.class);
@@ -127,6 +128,10 @@ private void addRect(){
      Page page = new Page();
      page.quizL= quizL;
      page.Project_fk = nProject.id;
+
+
+
+
      mProjectViewModel.addPage(page);
 
  }
@@ -138,5 +143,9 @@ private void addRect(){
 
  }
 
+ void openDialog(){
+
+
+ }
 
 }

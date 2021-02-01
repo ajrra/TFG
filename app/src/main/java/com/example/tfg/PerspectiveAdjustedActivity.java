@@ -1,6 +1,7 @@
 package com.example.tfg;
 
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 
 import com.example.tfg.Data.Page;
@@ -45,7 +46,7 @@ public class PerspectiveAdjustedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.show_paper_id);
-        Button but = this.findViewById(R.id.button5);
+        Button but = this.findViewById(R.id.button4);
         Bundle extras = this.getIntent().getExtras();
         long imagePath = extras.getLong("image");
         m = new Mat( imagePath );
@@ -112,16 +113,30 @@ private void addRect(){
     class SaveButtonClick implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            Project nProject = new Project();
-            Page page = new Page();
-            //page.quizL= this.quizL;
-            mProjectViewModel.addPage(page);
+
+            saveData();
+            next();
+
         }
     }
 
 
+ void saveData(){
+     Project nProject = new Project();
+     nProject.id= (int)mProjectViewModel.addProject(nProject);
+     Page page = new Page();
+     page.quizL= quizL;
+     page.Project_fk = nProject.id;
+     mProjectViewModel.addPage(page);
 
+ }
 
+ void next(){
+     Intent go = new Intent(this, MainActivity.class);
+     go.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+     startActivity(go);
+
+ }
 
 
 }

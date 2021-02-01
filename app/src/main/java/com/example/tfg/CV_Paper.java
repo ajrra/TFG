@@ -61,7 +61,7 @@ public class CV_Paper {
         Imgproc.adaptiveThreshold(grayImage,grayImage,255,Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,Imgproc.THRESH_BINARY,115,4);
 
         //APLICAMOS UNA DIFUMINACION PARA MEJORAR
-        Imgproc.GaussianBlur(grayImage,grayImage,new Size(5,5),0);
+      //  Imgproc.GaussianBlur(grayImage,grayImage,new Size(5,5),0);
         Imgproc.dilate(grayImage,grayImage, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3,3)));
         Core.copyMakeBorder(grayImage,grayImage,5,5,5,5,Core.BORDER_CONSTANT);
         //ALGORITMO CANNY DE DETECCION DE BORDES

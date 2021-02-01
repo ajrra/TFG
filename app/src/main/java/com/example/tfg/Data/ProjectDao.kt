@@ -9,7 +9,7 @@ import androidx.room.Query
 @Dao
 interface ProjectDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertProject(project: Project)
+    fun insertProject(project: Project): Long
 
     @Query("SELECT * FROM project_table WHERE id=:id")
     fun getProject(id: Int): Project

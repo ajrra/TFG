@@ -3,6 +3,7 @@ package com.example.tfg.Data
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,11 +22,9 @@ import kotlinx.coroutines.launch
         allPage= repository.getAllPages
     }
 
-    fun addProject(project: Project){
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.addProject(project)
-        }
-
+    fun addProject(project: Project):Long{
+        //need this on main thread
+        return  repository.addProject(project)
     }
      fun addPage(page:Page){
          viewModelScope.launch(Dispatchers.IO) { repository.addPage(page) }

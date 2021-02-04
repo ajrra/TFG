@@ -6,12 +6,13 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-@Database(entities = [Project::class, Page::class], version = 1, exportSchema = false)
+@Database(entities = [Project::class, Page::class, Answer::class], version = 1, exportSchema = false)
 @TypeConverters(convertidor::class)
 abstract class ProjectDatabase : RoomDatabase(){
 
     abstract fun projectDao(): ProjectDao
     abstract fun pageDao(): PageDao
+    abstract fun AnswerDao(): AnswerDao
 
     companion object{
         @Volatile

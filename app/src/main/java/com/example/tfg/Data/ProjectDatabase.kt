@@ -24,7 +24,8 @@ abstract class ProjectDatabase : RoomDatabase(){
             }
             synchronized(this){
                 val instance = Room.databaseBuilder(context.applicationContext,
-                                        ProjectDatabase::class.java, "project-database").allowMainThreadQueries().build()
+                                        ProjectDatabase::class.java, "project-database")
+                        .allowMainThreadQueries().build()
                 INSTANCE = instance
                 return instance
 

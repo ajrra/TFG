@@ -1,6 +1,7 @@
 package com.example.tfg.Data;
 
 import android.graphics.RectF;
+import android.os.Parcelable;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -22,5 +23,6 @@ public class Project  {
     public int id;
     @Ignore
     public ArrayList<Page> pages;
+    public String name;
 }
 

@@ -4,6 +4,7 @@ package com.example.tfg;
 import android.content.Intent;
 import android.graphics.Bitmap;
 
+import com.example.tfg.Data.LocalStorageAccess;
 import com.example.tfg.Data.Page;
 import com.example.tfg.Data.Project;
 import android.graphics.PointF;
@@ -24,11 +25,14 @@ import androidx.lifecycle.ViewModelProvider;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.example.tfg.Data.ProjectViewModel;
 import com.example.tfg.Views.RectSubSamplingScaleImage;
+import com.google.android.material.textfield.TextInputEditText;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class PerspectiveAdjustedActivity extends AppCompatActivity {
 
@@ -39,16 +43,20 @@ public class PerspectiveAdjustedActivity extends AppCompatActivity {
     private RectSubSamplingScaleImage imageView;
     private int count =0;
     private ProjectViewModel mProjectViewModel;
+    TextInputEditText text;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         quizL=new ArrayList<>();
-
-
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.show_paper_id);
         Button but = this.findViewById(R.id.button4);
         Bundle extras = this.getIntent().getExtras();
+
+        text = this.findViewById(R.id.project_name);
+        text.setText(new Date().toString());
+
+
         long imagePath = extras.getLong("image");
         m = new Mat( imagePath );
         but.setOnClickListener(new View.OnClickListener() {
@@ -111,27 +119,36 @@ private void addRect(){
 }
 
 
+
     class SaveButtonClick implements View.OnClickListener {
         @Override
         public void onClick(View v) {
 
             saveData();
-            next();
+           next();
 
         }
     }
 
 
  void saveData(){
+
+
      Project nProject = new Project();
-     nProject.id= (int)mProjectViewModel.addProject(nProject);
      Page page = new Page();
+     nProject.name =text.getText().toString();
+
+     LocalStorageAccess localDao = new LocalStorageAccess(getApplicationContext());
+
+
+    page.img =   localDao.saveToInternalSorage(bm,nProject.name );
+
+
+     nProject.id= (int)mProjectViewModel.addProject(nProject);
+
+
      page.quizL= quizL;
      page.Project_fk = nProject.id;
-
-
-
-
      mProjectViewModel.addPage(page);
 
  }
@@ -143,9 +160,5 @@ private void addRect(){
 
  }
 
- void openDialog(){
-
-
- }
 
 }

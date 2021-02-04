@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
         val database =ProjectDatabase.getDatabase(application)
         val projectDao = database.projectDao()
         val pageDao = database.pageDao()
+
         repository = ProjectRepository(projectDao,pageDao)
         allData = repository.getAllProjects
         allPage= repository.getAllPages

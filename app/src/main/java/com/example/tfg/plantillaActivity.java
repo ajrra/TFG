@@ -70,10 +70,9 @@ public class plantillaActivity extends AppCompatActivity implements CameraBridge
                 if(mRGBAT!=null && quad !=null){
                     Intent next = new Intent(getApplicationContext(),PerspectiveAdjustedActivity.class);
 
-
-                    mRGBAT = CV_Paper.perspectiveAdjust(mRGBAT,quad);
-                    next.putExtra("image",mRGBAT.nativeObj);
+                    next.putExtra("image",CV_Paper.perspectiveAdjust(mRGBAT,quad).nativeObj);
                     startActivity(next);
+                    finish();
                 }
             }
         });

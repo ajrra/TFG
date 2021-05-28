@@ -13,13 +13,14 @@ import kotlinx.coroutines.launch
     public val allData  : LiveData<List<ProjectAndAll>>
     public val allPage : LiveData<List<Page>>
     private val repository : ProjectRepository
+    public val localStorageAccess   : LocalStorageAccess
 
     init{
         val database =ProjectDatabase.getDatabase(application)
         val projectDao = database.projectDao()
         val pageDao = database.pageDao()
         val answerDao = database.AnswerDao()
-
+        localStorageAccess = LocalStorageAccess(application.applicationContext)
         repository = ProjectRepository(projectDao,pageDao,  answerDao)
         allProject = repository.getAllProjects
         allPage= repository.getAllPages
@@ -33,6 +34,11 @@ import kotlinx.coroutines.launch
      fun addPage(page:Page){
          viewModelScope.launch(Dispatchers.IO) { repository.addPage(page) }
 
+     }
+
+     fun deleteProject(project: Project){
+
+         viewModelScope.launch(Dispatchers.IO) { repository.deleteProject(project)}
      }
 
 }

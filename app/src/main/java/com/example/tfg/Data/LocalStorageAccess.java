@@ -5,6 +5,8 @@ import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import com.example.tfg.R;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,9 +15,6 @@ import java.io.FileOutputStream;
 public class LocalStorageAccess {
 
     ContextWrapper cw;
-    LocalStorageAccess localSingle;
-
-
 
     public LocalStorageAccess(Context context) {
         this.cw = new ContextWrapper(context);
@@ -43,7 +42,15 @@ public class LocalStorageAccess {
         return directory.getAbsolutePath();
     }
 
-    public Bitmap loadImageFromStorage(String path,String name) {
+
+    public void deleteImageFromStorage(String name){
+            File path1 = cw.getDir("imageDir", Context.MODE_PRIVATE);
+            File f = new File(path1, name+".png");
+            f.delete();
+
+    }
+
+    public Bitmap loadImageFromStorage(String name) {
 
         try {
 
@@ -53,7 +60,9 @@ public class LocalStorageAccess {
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+
         }
-        return null;
+        return  BitmapFactory.decodeResource(cw.getResources(),
+                R.drawable.ic_launcher_background);
     }
 }

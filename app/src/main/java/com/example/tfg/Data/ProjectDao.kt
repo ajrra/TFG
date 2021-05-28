@@ -1,10 +1,7 @@
 package com.example.tfg.Data
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface ProjectDao {
@@ -19,4 +16,7 @@ interface ProjectDao {
 
     @Query("SELECT * FROM project_table")
     fun getAllProjectsComplete(): LiveData<List<ProjectAndAll>>
+
+    @Delete
+    fun deleteProject(project: Project)
 }

@@ -10,9 +10,11 @@ import androidx.room.TypeConverters;
 
 import java.util.ArrayList;
 
+import static androidx.room.ForeignKey.CASCADE;
+
 @Entity(tableName = "page_table", foreignKeys = {@ForeignKey(entity = Project.class,
         parentColumns = "id",
-        childColumns = "Project_fk")}  )
+        childColumns = "Project_fk", onDelete = CASCADE )}  )
 public class Page{
     @PrimaryKey(autoGenerate = true)
     public int id;

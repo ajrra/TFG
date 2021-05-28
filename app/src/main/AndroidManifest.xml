@@ -33,6 +33,7 @@
         </activity>
         <activity android:name=".plantillaActivity"/>
         <activity android:name=".PerspectiveAdjustedActivity" />
+        <activity android:name=".ProjectSelectionActivity" />
     </application>
     <!--Declaring the required permissions-->
     <uses-permission

@@ -21,4 +21,8 @@ class ProjectRepository(private val projectDao: ProjectDao, private val pageDao:
      fun getPage(id:Int ,pId:Int): Page {
         return pageDao.getPage(id,pId)
     }
+
+    fun deleteProject(project: Project){
+        projectDao.deleteProject(project)
+    }
 }

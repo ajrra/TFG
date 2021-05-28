@@ -13,21 +13,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tfg.Data.LocalStorageAccess;
 import com.example.tfg.Data.Project;
+import com.example.tfg.Data.ProjectAndAll;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class projectRecyclerAdapter extends RecyclerView.Adapter<projectRecyclerAdapter.ViewHolder> {
 
     private static final String TAG = "projectRecyclerAdapter";
-
-    private ArrayList<Project> mProjects = new ArrayList<>();
-    private OnNoteListener mOnNoteListener;
+    private OnItemClickListener listener;
+    private List<ProjectAndAll> mProjects = new ArrayList<>();
     private LocalStorageAccess localStorage ;
 
 
-    public projectRecyclerAdapter(ArrayList<Project> mProjects, OnNoteListener mOnNoteListener,LocalStorageAccess localStorage) {
-        this.mProjects = mProjects;
-        this.mOnNoteListener = mOnNoteListener;
+    public projectRecyclerAdapter(LocalStorageAccess localStorage) {
         this.localStorage = localStorage;
     }
 
@@ -35,15 +34,16 @@ public class projectRecyclerAdapter extends RecyclerView.Adapter<projectRecycler
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.project_item, parent, false);
-        return new ViewHolder(view, mOnNoteListener);
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         try{
+            ProjectAndAll actual = mProjects.get(position);
+            holder.projectName.setText(actual.getProject().name);
+            holder.imagePage.setImageBitmap(localStorage.loadImageFromStorage(actual.getProject().name));
 
-            holder.projectName.setText(mProjects.get(position).name);
-           // Bitmap image = localStorage.loadImageFromStorage()
         }catch (NullPointerException e){
             Log.e(TAG, "onBindViewHolder: Null Pointer: " + e.getMessage() );
         }
@@ -54,33 +54,49 @@ public class projectRecyclerAdapter extends RecyclerView.Adapter<projectRecycler
         return mProjects.size();
     }
 
+    public void setProjects(List<ProjectAndAll> projects){
+        mProjects = projects;
+        notifyDataSetChanged();
+
+    }
+
+    public ProjectAndAll getProjectAt(int pos){
+        return mProjects.get(pos);
+    }
+
+
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         ImageView imagePage ;
         TextView projectName ;
-        RelativeLayout parent;
-        OnNoteListener mOnNoteListener;
 
 
-        public ViewHolder(@NonNull View itemView ,OnNoteListener onNoteListener) {
+        public ViewHolder(@NonNull View itemView ) {
             super(itemView);
             imagePage = itemView.findViewById(R.id.project_item_image);
             projectName = itemView.findViewById(R.id.text_project);
-            parent = itemView.findViewById(R.id.parent_layout);
-            mOnNoteListener = onNoteListener;
+
             itemView.setOnClickListener(this);
 
         }
 
         @Override
         public void onClick(View v) {
+            int position = getAdapterPosition();
             Log.d(TAG, "onClick: " + getAdapterPosition());
-            mOnNoteListener.onNoteClick(getAdapterPosition());
+            if (listener !=null && position != RecyclerView.NO_POSITION){
+                listener.onItemClick(mProjects.get(position));
+            }
         }
 
 
     }
-    public interface OnNoteListener{
-        void onNoteClick(int position);
+    public interface OnItemClickListener{
+        void onItemClick(ProjectAndAll projectAndAll);
     }
+
+    public void setOnItemClickListener(OnItemClickListener listener ){
+        this.listener= listener;
+    }
+
 }

@@ -31,6 +31,7 @@ public class plantillaActivity extends AppCompatActivity implements CameraBridge
 
     // Loads camera view of OpenCV for us to use. This lets us see using OpenCV
     private JavaCameraView mOpenCvCameraView;
+    private int MODE = 0;
     Mat mRGBA, mRGBAT;
     Quadrilateral quad;
 
@@ -53,7 +54,9 @@ public class plantillaActivity extends AppCompatActivity implements CameraBridge
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.i("MainActivity", "called onCreate");
+        Log.i("plantillaActivity", "called onCreate");
+        Bundle extras = this.getIntent().getExtras();
+        MODE =extras.getInt("MODE");
 
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

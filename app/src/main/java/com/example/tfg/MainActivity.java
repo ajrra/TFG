@@ -42,9 +42,24 @@ public class MainActivity extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 Log.i("MainActivity", "called onClick");
                 Intent i = new Intent(getApplicationContext(),plantillaActivity.class);
+                i.putExtra("MODE",0);
                 startActivity(i);
             }
         });
+
+        Button button2 = this.findViewById(R.id.button2);
+        button2.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                Log.i("MainActivity", "called onClick");
+                Intent i = new Intent(getApplicationContext(),ProjectSelectionActivity.class);
+                startActivity(i);
+            }
+        });
+
+
     }
 
     // Function to check and request permission

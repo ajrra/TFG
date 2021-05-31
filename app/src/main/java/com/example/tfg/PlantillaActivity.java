@@ -1,4 +1,5 @@
 package com.example.tfg;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,22 +21,23 @@ import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 
+import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
 
-public class plantillaActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
+public class PlantillaActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
     // Used for logging success or failure messages
     private static final String TAG = "OCVSample::Activity";
 
     // Loads camera view of OpenCV for us to use. This lets us see using OpenCV
     private JavaCameraView mOpenCvCameraView;
-    private int MODE = 0;
+
     Mat mRGBA, mRGBAT;
     Quadrilateral quad;
 
-    BaseLoaderCallback baseLoaderCallback = new BaseLoaderCallback(plantillaActivity.this) {
+    BaseLoaderCallback baseLoaderCallback = new BaseLoaderCallback(PlantillaActivity.this) {
         @Override
         public void onManagerConnected(int status) {
             switch (status) {
@@ -56,7 +58,7 @@ public class plantillaActivity extends AppCompatActivity implements CameraBridge
     public void onCreate(Bundle savedInstanceState) {
         Log.i("plantillaActivity", "called onCreate");
         Bundle extras = this.getIntent().getExtras();
-        MODE =extras.getInt("MODE");
+
 
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -71,10 +73,9 @@ public class plantillaActivity extends AppCompatActivity implements CameraBridge
             @Override
             public void onClick(View view) {
                 if(mRGBAT!=null && quad !=null){
-                    Intent next = new Intent(getApplicationContext(),PerspectiveAdjustedActivity.class);
-
+                    Intent next = new Intent();
                     next.putExtra("image",CV_Paper.perspectiveAdjust(mRGBAT,quad).nativeObj);
-                    startActivity(next);
+                    setResult(Activity.RESULT_OK, next);
                     finish();
                 }
             }
@@ -97,7 +98,7 @@ public class plantillaActivity extends AppCompatActivity implements CameraBridge
         mRGBAT = mRGBA.t();
         Core.flip(mRGBA,mRGBAT,-1);
         Mat tmp = mRGBAT.clone();
-        quad= CV_Paper.findDocument(tmp,tmp.size());
+        quad= CV_Paper.findDocument(tmp,tmp.size(), new Point(0,0));
         if(quad !=null) {
             ArrayList<MatOfPoint> contour = new ArrayList<MatOfPoint>();
             contour.add(quad.contour);

@@ -69,7 +69,7 @@ public class PerspectiveAdjustedActivity extends AppCompatActivity {
         Button but2 = this.findViewById(R.id.button5);
         but2.setOnClickListener(new SaveButtonClick());
 
-         bm = Bitmap.createBitmap(m.cols(), m.rows(),Bitmap.Config.ARGB_8888);
+        bm = Bitmap.createBitmap(m.cols(), m.rows(),Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(m, bm);
 
         mProjectViewModel = new ViewModelProvider(this).get(ProjectViewModel.class);
@@ -114,7 +114,11 @@ public class PerspectiveAdjustedActivity extends AppCompatActivity {
 
 private void addRect(){
     if(topL!=null && botR!=null ){
-       quizL.add(new RectF(topL.x,topL.y,botR.x,botR.y));
+
+        RectF newAdd = CV_Paper.adjustItemTemplate(m,new RectF(topL.x,topL.y,botR.x,botR.y));
+       if(newAdd != null){
+        quizL.add(newAdd);
+        }
     }
 }
 

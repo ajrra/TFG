@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,20 +12,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tfg.Data.LocalStorageAccess;
 import com.example.tfg.Data.Project;
-import com.example.tfg.Data.ProjectAndAll;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class projectRecyclerAdapter extends RecyclerView.Adapter<projectRecyclerAdapter.ViewHolder> {
+public class ProjectRecyclerAdapter extends RecyclerView.Adapter<ProjectRecyclerAdapter.ViewHolder> {
 
     private static final String TAG = "projectRecyclerAdapter";
     private OnItemClickListener listener;
-    private List<ProjectAndAll> mProjects = new ArrayList<>();
+    private List<Project> mProjects = new ArrayList<>();
     private LocalStorageAccess localStorage ;
 
 
-    public projectRecyclerAdapter(LocalStorageAccess localStorage) {
+    public ProjectRecyclerAdapter(LocalStorageAccess localStorage) {
         this.localStorage = localStorage;
     }
 
@@ -40,9 +38,9 @@ public class projectRecyclerAdapter extends RecyclerView.Adapter<projectRecycler
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         try{
-            ProjectAndAll actual = mProjects.get(position);
-            holder.projectName.setText(actual.getProject().name);
-            holder.imagePage.setImageBitmap(localStorage.loadImageFromStorage(actual.getProject().name));
+            Project actual = mProjects.get(position);
+            holder.projectName.setText(actual.name);
+            holder.imagePage.setImageBitmap(localStorage.loadImageFromStorage(actual.name));
 
         }catch (NullPointerException e){
             Log.e(TAG, "onBindViewHolder: Null Pointer: " + e.getMessage() );
@@ -54,13 +52,13 @@ public class projectRecyclerAdapter extends RecyclerView.Adapter<projectRecycler
         return mProjects.size();
     }
 
-    public void setProjects(List<ProjectAndAll> projects){
+    public void setProjects(List<Project> projects){
         mProjects = projects;
         notifyDataSetChanged();
 
     }
 
-    public ProjectAndAll getProjectAt(int pos){
+    public Project getProjectAt(int pos){
         return mProjects.get(pos);
     }
 
@@ -92,7 +90,7 @@ public class projectRecyclerAdapter extends RecyclerView.Adapter<projectRecycler
 
     }
     public interface OnItemClickListener{
-        void onItemClick(ProjectAndAll projectAndAll);
+        void onItemClick(Project project);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener ){

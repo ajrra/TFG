@@ -41,8 +41,8 @@ public class RectSubSamplingScaleImage extends SubsamplingScaleImageView {
     private void initialise() {
         float density = getResources().getDisplayMetrics().densityDpi;
         pin = BitmapFactory.decodeResource(this.getResources(), android.R.drawable.alert_dark_frame);
-        float w = (density/720f) * pin.getWidth();
-        float h = (density/720f) * pin.getHeight();
+        float w = (density/2880f) * pin.getWidth();
+        float h = (density/2880f) * pin.getHeight();
         pin = Bitmap.createScaledBitmap(pin, (int)w, (int)h, true);
         paint.setStyle(Paint.Style.STROKE);
     }

@@ -17,6 +17,9 @@ interface ProjectDao {
     @Query("SELECT * FROM project_table")
     fun getAllProjectsComplete(): LiveData<List<ProjectAndAll>>
 
+    @Query("SELECT * FROM project_table WHERE id=:id")
+    fun getAllProjectComplete(id:Int): ProjectAndAll
+
     @Delete
     fun deleteProject(project: Project)
 }

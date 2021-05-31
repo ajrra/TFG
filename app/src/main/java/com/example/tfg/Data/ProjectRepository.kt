@@ -16,11 +16,11 @@ class ProjectRepository(private val projectDao: ProjectDao, private val pageDao:
         return projectDao.getProject(id)
     }
 
+    fun getProjectAll ( id:Int) = projectDao.getAllProjectComplete(id)
+
      fun addPage(page: Page) = pageDao.insertPage(page)
 
-     fun getPage(id:Int ,pId:Int): Page {
-        return pageDao.getPage(id,pId)
-    }
+
 
     fun deleteProject(project: Project){
         projectDao.deleteProject(project)

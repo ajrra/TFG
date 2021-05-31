@@ -27,6 +27,12 @@ import kotlinx.coroutines.launch
         allData = repository.getAll
     }
 
+     fun getProject(id : Int): Project{
+         return repository.getProject(id)
+     }
+
+     fun getAllProject(id:Int) = repository.getProjectAll(id)
+
     fun addProject(project: Project):Long{
         //need this on main thread
         return  repository.addProject(project)

@@ -31,9 +31,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".plantillaActivity"/>
+        <activity android:name=".PlantillaActivity"/>
         <activity android:name=".PerspectiveAdjustedActivity" />
         <activity android:name=".ProjectSelectionActivity" />
+        <activity android:name=".AnswerFillingActivity" />
     </application>
     <!--Declaring the required permissions-->
     <uses-permission

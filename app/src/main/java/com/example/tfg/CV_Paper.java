@@ -87,24 +87,15 @@ public class CV_Paper {
         Bitmap bm = Bitmap.createBitmap(temp.cols(), temp.rows(),Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(temp, bm);
         ArrayList<MatOfPoint> contours = findCountour(temp, ofs);
-        Imgproc.drawContours(aux,contours,-1,new Scalar(255,0,0),3);
+        Imgproc.drawContours(aux,contours,-1,  new Scalar(0, 255, 0, 255),5);
         bm = Bitmap.createBitmap(aux.cols(), aux.rows(),Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(aux, bm);
        Quadrilateral quad = getQuadrilateral(contours,temp.size(),ofs);
 
 
-//        Quadrilateral quad = findDocument(temp , temp.size(),ofs);
         if (quad != null){
-         /*   Mat M;
-            Point[] p1 = {p_1,p_2,p_3,p_4};
-            Point[] p2 = {new Point(0, 0), new Point(0, m.height()),new Point(m.width(), m.height()), new Point(m.width(), 0)};
-            p2=sortPoints(p2);
-            MatOfPoint2f pts1 = new MatOfPoint2f(p1[0],p1[1],p1[2],p1[3]);
-            MatOfPoint2f pts2 = new MatOfPoint2f(p2[0],p2[1],p2[2],p2[3]);
-            M=Imgproc.getAffineTransform(pts2,pts1);
-            M.adjustROI()*/
 
-           return new RectF ((float )quad.points[3].x, (float )quad.points[1].y, (float )quad.points[1].x,(float ) quad.points[3].y);
+           return new RectF ((float )quad.points[3].x-5, (float )quad.points[1].y-5, (float )quad.points[1].x-5,(float ) quad.points[3].y-5);
         }
         return null;
     }
@@ -118,18 +109,25 @@ public class CV_Paper {
         Bitmap bm = Bitmap.createBitmap(cannedImage.cols(), cannedImage.rows(),Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(src, bm);
         //PASAMOS A GRIS PARA TRABAJAR MEJOR
+        Imgproc.cvtColor(src, grayImage, Imgproc.COLOR_RGBA2BGR);
+        Mat dst = grayImage.clone();
+        Imgproc.bilateralFilter(grayImage, dst, 9, 75, 75, Core.BORDER_DEFAULT);
+        Utils.matToBitmap(grayImage, bm);
+        Imgproc.cvtColor(dst, dst, Imgproc.COLOR_RGB2RGBA);
+        //PASAMOS A GRIS PARA TRABAJAR MEJOR
+        Imgproc.cvtColor(dst, grayImage, Imgproc.COLOR_RGBA2GRAY, 4);
 
-        Imgproc.cvtColor(src, grayImage, Imgproc.COLOR_RGBA2GRAY, 4);
-        for (int i =0 ; i<3 ; i++){
-            Imgproc.erode(grayImage,grayImage, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3,3)));
+        //APLICAMOS UN THRESHOLD ADAPTATIVO PARA ELIMINAR SOMBRAS
+        Imgproc.adaptiveThreshold(grayImage,grayImage,255,Imgproc.ADAPTIVE_THRESH_MEAN_C,Imgproc.THRESH_BINARY,25, 4);
+        Utils.matToBitmap(grayImage, bm);
+        for (int i =0 ; i<0 ; i++){
+            Imgproc.dilate(grayImage,grayImage, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3,3)));
             Utils.matToBitmap(grayImage, bm);
         }
-        //APLICAMOS UN THRESHOLD ADAPTATIVO PARA ELIMINAR SOMBRAS
-        Imgproc.adaptiveThreshold(grayImage,cannedImage,255,Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,Imgproc.THRESH_BINARY,25, 4);
         Utils.matToBitmap(cannedImage, bm);
-       // Core.copyMakeBorder(cannedImage,cannedImage,5,5,5,5,Core.BORDER_CONSTANT);
+        Core.copyMakeBorder(grayImage,cannedImage,5,5,5,5,Core.BORDER_CONSTANT);
         //ALGORITMO CANNY DE DETECCION DE BORDES
-        //Imgproc.Canny(grayImage, cannedImage, 200, 250);
+
         return cannedImage;
     }
 
@@ -159,6 +157,8 @@ public class CV_Paper {
         Core.copyMakeBorder(grayImage,grayImage,5,5,5,5,Core.BORDER_CONSTANT);
         //ALGORITMO CANNY DE DETECCION DE BORDES
         Imgproc.Canny(grayImage, cannedImage, 100, 200);
+
+
         Bitmap bm = Bitmap.createBitmap(cannedImage.cols(), cannedImage.rows(),Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(cannedImage, bm);
         return cannedImage;
@@ -265,8 +265,9 @@ public class CV_Paper {
             Point[] points = approx.toArray();
 
             // select biggest 4 angles polygon
-            if (points.length == 4 && Imgproc.isContourConvex(new MatOfPoint(approx.toArray()))) {
+            if (points.length >= 4 && Imgproc.isContourConvex(new MatOfPoint(approx.toArray()))) {
                 Point[] foundPoints = sortPoints(points);
+
                 if(insideArea(foundPoints,srcSize,ofs))
                 return new Quadrilateral(c, foundPoints);
             }
@@ -336,8 +337,10 @@ public class CV_Paper {
     }
     private static boolean insideArea(Point[] rp, Size size,Point ofs) {
 
-        int width = Double.valueOf(size.width).intValue() ;
-        int height = Double.valueOf(size.height).intValue();
+        if(ofs.x > 0 ) return true;
+
+        int width = Double.valueOf(size.width).intValue() +(int)ofs.x;
+        int height = Double.valueOf(size.height).intValue()+(int)ofs.y;
         int baseMeasure = height/4;
 
         int bottomPos = height-baseMeasure;
@@ -346,10 +349,10 @@ public class CV_Paper {
         int rightPos = width/2+baseMeasure;
 
         return (
-                rp[0].x-(int)ofs.x <= leftPos && rp[0].y-(int)ofs.y <= topPos
-                        && rp[1].x-(int)ofs.x >= rightPos && rp[1].y-(int)ofs.y <= topPos
-                        && rp[2].x-(int)ofs.x >= rightPos && rp[2].y-(int)ofs.y >= bottomPos
-                        && rp[3].x-(int)ofs.x <= leftPos && rp[3].y-(int)ofs.y >= bottomPos
+                rp[0].x <= leftPos && rp[0].y-(int)ofs.y <= topPos
+                        && rp[1].x >= rightPos && rp[1].y <= topPos
+                        && rp[2].x>= rightPos && rp[2].y >= bottomPos
+                        && rp[3].x <= leftPos && rp[3].y >= bottomPos
 
         );
     }

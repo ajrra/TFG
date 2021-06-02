@@ -3,6 +3,7 @@ package com.example.tfg;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.Bundle;
@@ -26,6 +27,8 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,7 +41,7 @@ public class AnswerFillingActivity  extends AppCompatActivity {
     private RectSubSamplingScaleImage imageView;
     TextInputEditText text;
     private int MY_REQUEST_CODE = 600;
-
+    private Mat actual_photo_answer ;
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -46,7 +49,6 @@ public class AnswerFillingActivity  extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.answer_filling);
         Button but = this.findViewById(R.id.answerButton1);
-        but.setText("Photo");
         but.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -59,6 +61,8 @@ public class AnswerFillingActivity  extends AppCompatActivity {
 
             }
         });
+        but = this.findViewById(R.id.answerButton2);
+        but.setOnClickListener(v -> evalItem());
         Bundle extras = this.getIntent().getExtras();
         mProjectViewModel = new ViewModelProvider(this).get(ProjectViewModel.class);
         int projectId = extras.getInt("project");
@@ -93,7 +97,11 @@ public class AnswerFillingActivity  extends AppCompatActivity {
                 if (data != null) {
                     //TODO
 
-                    bm = CV_Paper.unpackMat(data.getExtras().getLong("image"));
+                    actual_photo_answer = new Mat (data.getExtras().getLong("image"));
+                    actual_photo_answer = CV_Paper.preprocess_item(actual_photo_answer);
+                    Imgproc.erode(actual_photo_answer,actual_photo_answer, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3,3)));
+                    bm = Bitmap.createBitmap(actual_photo_answer.cols(), actual_photo_answer.rows(),Bitmap.Config.ARGB_8888);
+                    Utils.matToBitmap(actual_photo_answer, bm);
                     imageView.setImage(ImageSource.bitmap(bm));
 
                 }
@@ -103,8 +111,11 @@ public class AnswerFillingActivity  extends AppCompatActivity {
     }
 
     private void evalItem(){
-
-
+        ArrayList answerBools = new ArrayList();
+        for (RectF x : imageView.rectangles){
+                answerBools.add(CV_Paper.Eval(actual_photo_answer, x));
+        }
+        imageView.rect_val = answerBools;
     }
 
 

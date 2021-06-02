@@ -10,6 +10,7 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import com.example.tfg.R;
 
 import java.util.ArrayList;
 
@@ -22,6 +23,7 @@ public class RectSubSamplingScaleImage extends SubsamplingScaleImageView {
     private PointF sPin;
     private Bitmap pin;
     public ArrayList<RectF> rectangles = new ArrayList<RectF>();
+    public ArrayList<Boolean> rect_val = new ArrayList<>();
 
     public RectSubSamplingScaleImage(Context context) {
         this(context, null);
@@ -61,17 +63,32 @@ public class RectSubSamplingScaleImage extends SubsamplingScaleImageView {
         if (sPin != null && pin != null) {
             sourceToViewCoord(sPin, vPin);
             float vX = vPin.x - (pin.getWidth()/2);
-            float vY = vPin.y - pin.getHeight();
+            float vY = vPin.y - pin.getHeight()/2;
             canvas.drawBitmap(pin, vX, vY, paint);
         }
-       for (RectF rec : rectangles){
+        if (rect_val.size() == rectangles.size()){
+            paint.setStyle(Paint.Style.FILL);
+            for(int i = 0 ; i< rect_val.size(); i++){
+                RectF rec = rectangles.get(i);
+                PointF top = resize(new PointF(rec.left,rec.top));
+                PointF bot = resize(new PointF(rec.right,rec.bottom));
+                if(rect_val.get(i)){
+                    paint.setColor(getResources().getColor(R.color.green));
+                }else{
+                    paint.setColor(getResources().getColor(R.color.red));
+                }
+                canvas.drawRect(new RectF(top.x,top.y,bot.x,bot.y),paint);
+            }
+            paint.setStyle(Paint.Style.STROKE);
+        }else {
+            for (RectF rec : rectangles) {
 
-           PointF top = resize(new PointF(rec.left,rec.top));
-           PointF bot = resize(new PointF(rec.right,rec.bottom));
+                PointF top = resize(new PointF(rec.left, rec.top));
+                PointF bot = resize(new PointF(rec.right, rec.bottom));
 
-           canvas.drawRect(new RectF(top.x,top.y,bot.x,bot.y),paint);
-       }
-
+                canvas.drawRect(new RectF(top.x, top.y, bot.x, bot.y), paint);
+            }
+        }
 
     }
 

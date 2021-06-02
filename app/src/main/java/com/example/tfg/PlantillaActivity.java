@@ -95,7 +95,8 @@ public class PlantillaActivity extends AppCompatActivity implements CameraBridge
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         mRGBA = inputFrame.rgba();
-        mRGBAT = mRGBA.t();
+        mRGBAT = new Mat();
+        Core.transpose(mRGBA,mRGBAT);
         Core.flip(mRGBA,mRGBAT,-1);
         Mat tmp = mRGBAT.clone();
         quad= CV_Paper.findDocument(tmp,tmp.size(), new Point(0,0));

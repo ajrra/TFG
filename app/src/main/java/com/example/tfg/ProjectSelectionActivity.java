@@ -1,5 +1,6 @@
 package com.example.tfg;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ public class ProjectSelectionActivity  extends AppCompatActivity
     // vars
     private ProjectRecyclerAdapter mNoteRecyclerAdapter;
     private ProjectViewModel mProjectViewModel;
+    private int MODE;
 
 
     @Override
@@ -39,7 +41,7 @@ public class ProjectSelectionActivity  extends AppCompatActivity
         mProjectViewModel = new ViewModelProvider(this).get(ProjectViewModel.class);
         setContentView(R.layout.project_select_activity);
         mRecyclerView = findViewById(R.id.recycler_view);
-
+        MODE = getIntent().getIntExtra("MODE",100);
 
         initRecyclerView();
 
@@ -111,9 +113,10 @@ public class ProjectSelectionActivity  extends AppCompatActivity
             public void onItemClick(Project project) {
                 // TODO Auto-generated method stub
                 Log.i("ProjectSelection", "called onItemClick");
-                Intent i = new Intent(getApplicationContext(),AnswerFillingActivity.class);
+                Intent i = new Intent();
                 i.putExtra("project",project.id);
-                startActivity(i);
+                setResult(Activity.RESULT_OK, i);
+                finish();
             }
         });
 

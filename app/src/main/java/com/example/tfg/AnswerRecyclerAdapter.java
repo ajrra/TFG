@@ -16,6 +16,7 @@ import com.example.tfg.Data.Project;
 import com.example.tfg.Data.ProjectAndAll;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAdapter.ViewHolder> {
@@ -40,8 +41,7 @@ public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAd
     public void onBindViewHolder(@NonNull AnswerRecyclerAdapter.ViewHolder holder, int position) {
         try{
             Answer actual = mAnswers.get(position);
-            holder.projectName.setText(actual.id);
-
+            holder.projectName.setText(String.valueOf(actual.id));
 
         }catch (NullPointerException e){
             Log.e(TAG, "onBindViewHolder: Null Pointer: " + e.getMessage() );
@@ -59,20 +59,20 @@ public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAd
 
     }
 
-    public Answer getAnswer(int pos){
-        return mAnswers.get(pos);
+    public List<Answer> getAnswers(){
+        return mAnswers;
     }
 
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        ImageView imagePage ;
+        //ImageView imagePage ;
         TextView projectName ;
 
 
         public ViewHolder(@NonNull View itemView ) {
             super(itemView);
-            imagePage = itemView.findViewById(R.id.project_item_image);
+          //  imagePage = itemView.findViewById(R.id.project_item_image);
             projectName = itemView.findViewById(R.id.text_project);
 
             itemView.setOnClickListener(this);

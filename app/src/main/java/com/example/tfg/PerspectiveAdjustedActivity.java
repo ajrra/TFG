@@ -72,7 +72,8 @@ public class PerspectiveAdjustedActivity extends AppCompatActivity {
         Bundle extras = this.getIntent().getExtras();
         mProjectViewModel = new ViewModelProvider(this).get(ProjectViewModel.class);
         text = this.findViewById(R.id.project_name);
-        text.setText(new Date().toString());
+        String name = new Date().toString().trim();
+        text.setText(name);
 
         bm = mProjectViewModel.getLocalStorageAccess().loadImageFromStorage("opencv_mat");
 

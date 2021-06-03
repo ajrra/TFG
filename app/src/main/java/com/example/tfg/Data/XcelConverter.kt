@@ -8,8 +8,8 @@ class XcelConverter {
         var value = ""
         for(i in list)
         {
-            if(i) value += "T,"
-            else value += "F,"
+            if(i) value += "1,"
+            else value += "0,"
         }
         value +="\n"
         return value

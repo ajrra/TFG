@@ -9,6 +9,7 @@ import com.example.tfg.Data.Page;
 import com.example.tfg.Data.Project;
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -19,6 +20,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -33,7 +35,10 @@ import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class PerspectiveAdjustedActivity extends AppCompatActivity {
@@ -47,21 +52,8 @@ public class PerspectiveAdjustedActivity extends AppCompatActivity {
     private ProjectViewModel mProjectViewModel;
     TextInputEditText text;
 
-    BaseLoaderCallback baseLoaderCallback = new BaseLoaderCallback(PerspectiveAdjustedActivity.this) {
-        @Override
-        public void onManagerConnected(int status) {
-            switch (status) {
-                case BaseLoaderCallback.SUCCESS: {
-                   // mOpenCvCameraView.enableView();
-                    break;
-                }
-                default: {
-                    super.onManagerConnected(status);
-                    break;
-                }
-            }
-        }
-    };
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         quizL=new ArrayList<>();
@@ -72,7 +64,12 @@ public class PerspectiveAdjustedActivity extends AppCompatActivity {
         Bundle extras = this.getIntent().getExtras();
         mProjectViewModel = new ViewModelProvider(this).get(ProjectViewModel.class);
         text = this.findViewById(R.id.project_name);
-        String name = new Date().toString().trim();
+
+        LocalDateTime myDateObj = LocalDateTime.now();
+        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm-ss");
+        String name = myDateObj.format(myFormatObj);
+
+
         text.setText(name);
 
         bm = mProjectViewModel.getLocalStorageAccess().loadImageFromStorage("opencv_mat");
@@ -193,18 +190,6 @@ private void popRect(){
         m.release();
     }
 
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (OpenCVLoader.initDebug()) {
-            Log.i("TAG", "OpenCV initialize success");
-            baseLoaderCallback.onManagerConnected(BaseLoaderCallback.SUCCESS);
-        } else {
-            Log.i("TAG", "OpenCV initialize failed");
-            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION, this, baseLoaderCallback);
-        }
-    }
 
 
 

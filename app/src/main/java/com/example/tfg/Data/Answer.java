@@ -17,5 +17,5 @@ public class Answer {
     public int id;
     @ColumnInfo(name = "Page_fk")
     public int Page_fk;
-    String value;
+    public ArrayList<Boolean> value;
 }

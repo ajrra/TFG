@@ -47,4 +47,11 @@ import kotlinx.coroutines.launch
          viewModelScope.launch(Dispatchers.IO) { repository.deleteProject(project)}
      }
 
+     fun insertAnswer(answer: Answer){
+         viewModelScope.launch(Dispatchers.IO) { repository.addAnswer(answer)}
+
+     }
+
+     fun getAnswersFromPage(id:Int) = repository.getAnswerFromPage(id)
+
 }

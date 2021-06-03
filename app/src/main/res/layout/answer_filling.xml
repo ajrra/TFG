@@ -4,9 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+
 
         <com.example.tfg.Views.RectSubSamplingScaleImage
             android:id="@+id/answerImage"
@@ -16,27 +14,53 @@
             android:layout_marginBottom="97dp"
             android:src="@drawable/ic_launcher_foreground" />
 
-        <Button
-            android:id="@+id/answerButton1"
-            android:layout_width="175dp"
-            android:layout_height="59dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="40dp"
-            android:text="Button" />
 
-        <Button
-            android:id="@+id/answerButton2"
-            android:layout_width="177dp"
-            android:layout_height="59dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="40dp"
-            android:text="Button" />
+    <Button
+        android:id="@+id/answerButton_Photo"
 
-        <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="24dp"
+        android:text="Photo" />
+
+    <Button
+        android:id="@+id/answerButton_CHECK"
+        android:layout_width="126dp"
+        android:layout_height="wrap_content"
+
+
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="35dp"
+        android:layout_marginRight="35dp"
+        android:layout_marginBottom="24dp"
+        android:layout_toStartOf="@+id/answerButton_Photo"
+        android:layout_toLeftOf="@+id/answerButton_Photo"
+        android:text="CHECK" />
+
+    <Button
+        android:id="@+id/answerButton_SAVE"
+        android:layout_width="126dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginBottom="24dp"
+        android:layout_toStartOf="@+id/answerButton_CHECK"
+        android:layout_toLeftOf="@+id/answerButton_CHECK"
+        android:text="SAVE" />
+
+    <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -48,6 +72,6 @@
         </com.google.android.material.textfield.TextInputLayout>
 
 
-    </RelativeLayout>
+
 
 </RelativeLayout>

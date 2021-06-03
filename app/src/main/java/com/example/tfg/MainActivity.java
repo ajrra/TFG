@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,11 +12,22 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import com.davemorrissey.labs.subscaleview.ImageSource;
+
+import org.opencv.android.Utils;
+import org.opencv.core.Mat;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -24,6 +36,26 @@ public class MainActivity extends AppCompatActivity {
     private static final int CAMERA_PERMISSION_CODE = 100;
     private static final int STORAGE_PERMISSION_CODE = 200;
     private static final int MY_REQUEST_CODE =300;
+
+
+    ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+
+
+                        Intent next = new Intent(getApplicationContext(),PerspectiveAdjustedActivity.class);
+                        next.putExtra("image",result.getData().getExtras().getString("image"));
+                        startActivity(next);
+
+
+                        // Handle the Intent
+                    }
+                }
+            });
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,9 +74,7 @@ public class MainActivity extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 Log.i("MainActivity", "called onClick");
                 Intent i = new Intent(getApplicationContext(), PlantillaActivity.class);
-                startActivityForResult(i,MY_REQUEST_CODE);
-
-
+                mStartForResult.launch(i);
             }
         });
 
@@ -133,22 +163,6 @@ public class MainActivity extends AppCompatActivity {
                         "Storage Permission Denied",
                         Toast.LENGTH_SHORT)
                         .show();
-            }
-        }
-    }
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == MY_REQUEST_CODE) {
-                if (data != null) {
-                    Intent next = new Intent(getApplicationContext(),PerspectiveAdjustedActivity.class);
-                    next.putExtra("image",data.getExtras().getLong("image"));
-                    startActivity(next);
-                }
-
             }
         }
     }

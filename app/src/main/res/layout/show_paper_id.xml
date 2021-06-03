@@ -17,24 +17,43 @@
             android:src="@drawable/ic_launcher_foreground" />
 
         <Button
-            android:id="@+id/button4"
-            android:layout_width="175dp"
-            android:layout_height="59dp"
+            android:id="@+id/button_add_rect"
+            android:layout_width="109dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginEnd="22dp"
-            android:layout_marginRight="22dp"
-            android:layout_marginBottom="40dp"
-            android:text="Button" />
+            android:layout_marginBottom="38dp"
+            android:text="ADD" />
 
         <Button
-            android:id="@+id/button5"
-            android:layout_width="177dp"
-            android:layout_height="59dp"
+            android:id="@+id/button_pop"
+            android:layout_width="109dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="40dp"
-            android:text="Button" />
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginBottom="38dp"
+            android:text="DELETE" />
+
+        <Button
+            android:id="@+id/button_save"
+            android:layout_width="109dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="147dp"
+            android:layout_marginLeft="147dp"
+            android:layout_marginEnd="155dp"
+            android:layout_marginRight="155dp"
+            android:layout_marginBottom="38dp"
+            android:text="SAVE" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"

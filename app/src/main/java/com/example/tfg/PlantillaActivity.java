@@ -1,6 +1,7 @@
 package com.example.tfg;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -10,12 +11,16 @@ import android.view.WindowManager;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.example.tfg.Data.ProjectViewModel;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 
 import org.opencv.android.JavaCameraView;
 import org.opencv.android.OpenCVLoader;
+import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -33,6 +38,7 @@ public class PlantillaActivity extends AppCompatActivity implements CameraBridge
 
     // Loads camera view of OpenCV for us to use. This lets us see using OpenCV
     private JavaCameraView mOpenCvCameraView;
+    private ProjectViewModel mProjectViewModel;
 
     Mat mRGBA, mRGBAT;
     Quadrilateral quad;
@@ -59,7 +65,7 @@ public class PlantillaActivity extends AppCompatActivity implements CameraBridge
         Log.i("plantillaActivity", "called onCreate");
         Bundle extras = this.getIntent().getExtras();
 
-
+        mProjectViewModel = new ViewModelProvider(this).get(ProjectViewModel .class);
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -68,13 +74,18 @@ public class PlantillaActivity extends AppCompatActivity implements CameraBridge
         mOpenCvCameraView = (JavaCameraView) findViewById(R.id.show_camera_activity_java_surface_view);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
+
         Button nextButton = (Button) this.findViewById(R.id.button);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(mRGBAT!=null && quad !=null){
                     Intent next = new Intent();
-                    next.putExtra("image",CV_Paper.perspectiveAdjust(mRGBAT,quad).nativeObj);
+                    Mat tmp = CV_Paper.perspectiveAdjust(mRGBAT,quad);
+                    Core.rotate(tmp,tmp,Core.ROTATE_180);
+                    Bitmap bm = Bitmap.createBitmap(tmp.cols(), tmp.rows(), Bitmap.Config.ARGB_8888);
+                    Utils.matToBitmap(tmp, bm);
+                    next.putExtra("image",mProjectViewModel.getLocalStorageAccess().saveToInternalSorage(bm,"opencv_mat"));
                     setResult(Activity.RESULT_OK, next);
                     finish();
                 }
@@ -96,8 +107,8 @@ public class PlantillaActivity extends AppCompatActivity implements CameraBridge
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         mRGBA = inputFrame.rgba();
         mRGBAT = new Mat();
-        Core.transpose(mRGBA,mRGBAT);
-        Core.flip(mRGBA,mRGBAT,-1);
+        mRGBAT = mRGBA.clone();
+
         Mat tmp = mRGBAT.clone();
         quad= CV_Paper.findDocument(tmp,tmp.size(), new Point(0,0));
         if(quad !=null) {
@@ -140,7 +151,7 @@ public class PlantillaActivity extends AppCompatActivity implements CameraBridge
             baseLoaderCallback.onManagerConnected(BaseLoaderCallback.SUCCESS);
         } else {
             Log.i("TAG", "OpenCV initialize failed");
-            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_12, this, baseLoaderCallback);
+            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION, this, baseLoaderCallback);
         }
     }
 

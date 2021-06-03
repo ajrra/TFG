@@ -27,6 +27,8 @@ import com.example.tfg.Data.ProjectViewModel;
 import com.example.tfg.Views.RectSubSamplingScaleImage;
 import com.google.android.material.textfield.TextInputEditText;
 
+import org.opencv.android.BaseLoaderCallback;
+import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 
@@ -44,21 +46,36 @@ public class PerspectiveAdjustedActivity extends AppCompatActivity {
     private int count =0;
     private ProjectViewModel mProjectViewModel;
     TextInputEditText text;
+
+    BaseLoaderCallback baseLoaderCallback = new BaseLoaderCallback(PerspectiveAdjustedActivity.this) {
+        @Override
+        public void onManagerConnected(int status) {
+            switch (status) {
+                case BaseLoaderCallback.SUCCESS: {
+                   // mOpenCvCameraView.enableView();
+                    break;
+                }
+                default: {
+                    super.onManagerConnected(status);
+                    break;
+                }
+            }
+        }
+    };
     @Override
     public void onCreate(Bundle savedInstanceState) {
         quizL=new ArrayList<>();
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.show_paper_id);
-        Button but = this.findViewById(R.id.button4);
+        Button but = this.findViewById(R.id.button_add_rect);
         Bundle extras = this.getIntent().getExtras();
-
+        mProjectViewModel = new ViewModelProvider(this).get(ProjectViewModel.class);
         text = this.findViewById(R.id.project_name);
         text.setText(new Date().toString());
 
+        bm = mProjectViewModel.getLocalStorageAccess().loadImageFromStorage("opencv_mat");
 
-        long imagePath = extras.getLong("image");
-        m = new Mat( imagePath );
         but.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,13 +83,10 @@ public class PerspectiveAdjustedActivity extends AppCompatActivity {
                 imageView.invalidate();
             }
         });
-        Button but2 = this.findViewById(R.id.button5);
+        Button but2 = this.findViewById(R.id.button_save);
         but2.setOnClickListener(new SaveButtonClick());
 
-        bm = Bitmap.createBitmap(m.cols(), m.rows(),Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(m, bm);
 
-        mProjectViewModel = new ViewModelProvider(this).get(ProjectViewModel.class);
         imageView = (RectSubSamplingScaleImage) this.findViewById(R.id.imageSingle);
         imageView.rectangles=quizL;
 
@@ -94,6 +108,7 @@ public class PerspectiveAdjustedActivity extends AppCompatActivity {
                         case 2:
                             botR= new PointF(sCoord.x,sCoord.y);
                             imageView.setPin(botR);
+                            count=0;
                             break;
                         default:
                             count=0;
@@ -103,8 +118,15 @@ public class PerspectiveAdjustedActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        Button b3 = this.findViewById(R.id.button_pop);
+        b3.setOnClickListener(v -> popRect());
         imageView.setImage(ImageSource.bitmap(bm));
         imageView.setOnTouchListener((view, motionEvent) -> gestureDetector.onTouchEvent(motionEvent));
+        m = new Mat();
+        Bitmap bm32 = bm.copy(Bitmap.Config.ARGB_8888,true);
+        Utils.bitmapToMat(bm32,m);
+
 
 
 
@@ -120,6 +142,12 @@ private void addRect(){
         quizL.add(newAdd);
         }
     }
+}
+
+private void popRect(){
+        if (quizL!=null && !quizL.isEmpty())
+            quizL.remove(quizL.size()-1);
+        imageView.invalidate();
 }
 
 
@@ -157,7 +185,36 @@ private void addRect(){
 
  }
 
- void next(){
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        m.release();
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (OpenCVLoader.initDebug()) {
+            Log.i("TAG", "OpenCV initialize success");
+            baseLoaderCallback.onManagerConnected(BaseLoaderCallback.SUCCESS);
+        } else {
+            Log.i("TAG", "OpenCV initialize failed");
+            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION, this, baseLoaderCallback);
+        }
+    }
+
+
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
+    void next(){
      Intent go = new Intent(this, MainActivity.class);
      go.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
      startActivity(go);

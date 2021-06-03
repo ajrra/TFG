@@ -66,7 +66,8 @@ public class RectSubSamplingScaleImage extends SubsamplingScaleImageView {
             float vY = vPin.y - pin.getHeight()/2;
             canvas.drawBitmap(pin, vX, vY, paint);
         }
-        if (rect_val.size() == rectangles.size()){
+
+        if (rect_val!=null &&  rect_val.size() == rectangles.size()){
             paint.setStyle(Paint.Style.FILL);
             for(int i = 0 ; i< rect_val.size(); i++){
                 RectF rec = rectangles.get(i);

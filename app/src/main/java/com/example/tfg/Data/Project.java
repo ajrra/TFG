@@ -21,8 +21,6 @@ public class Project  {
 
     @PrimaryKey(autoGenerate = true)
     public int id;
-    @Ignore
-    public ArrayList<Page> pages;
     public String name;
 }
 

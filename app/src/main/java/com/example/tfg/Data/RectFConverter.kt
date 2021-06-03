@@ -5,7 +5,7 @@ import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class convertidor {
+class RectFConverter {
 
 
 
@@ -18,5 +18,7 @@ class convertidor {
         val type = object : TypeToken<ArrayList<RectF>>() {}.type
         return Gson().fromJson(name,type)
     }
+
+
 
 }

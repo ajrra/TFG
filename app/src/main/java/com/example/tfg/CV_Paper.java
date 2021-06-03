@@ -65,8 +65,7 @@ public class CV_Paper {
 
         temp.locateROI(m.size(),ofs);
         temp = CV_Paper.preprocess_item(temp);
-        Bitmap bm = Bitmap.createBitmap(temp.cols(), temp.rows(),Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(temp, bm);
+
         ArrayList<MatOfPoint> contours = findCountour(temp, ofs);
 
        Quadrilateral quad = getQuadrilateral(contours,temp.size(),ofs);
@@ -85,23 +84,22 @@ public class CV_Paper {
         Size size = src.size();
         Mat grayImage = new Mat(size, CvType.CV_8UC4);
         Mat cannedImage = new Mat(size, CvType.CV_8UC1);
-        Bitmap bm = Bitmap.createBitmap(cannedImage.cols(), cannedImage.rows(),Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(src, bm);
+
         Imgproc.cvtColor(src, grayImage, Imgproc.COLOR_RGBA2BGR);
         Mat dst = grayImage.clone();
         Imgproc.bilateralFilter(grayImage, dst, 9, 75, 75, Core.BORDER_DEFAULT);
-        Utils.matToBitmap(grayImage, bm);
+
         Imgproc.cvtColor(dst, dst, Imgproc.COLOR_RGB2RGBA);
         Imgproc.cvtColor(dst, grayImage, Imgproc.COLOR_RGBA2GRAY, 4);
 
         //APLICAMOS UN THRESHOLD ADAPTATIVO PARA ELIMINAR SOMBRAS
         Imgproc.adaptiveThreshold(grayImage,grayImage,255,Imgproc.ADAPTIVE_THRESH_MEAN_C,Imgproc.THRESH_BINARY,25, 15);
-        Utils.matToBitmap(grayImage, bm);
+
         for (int i =0 ; i<0 ; i++){
             Imgproc.dilate(grayImage,grayImage, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3,3)));
-            Utils.matToBitmap(grayImage, bm);
+
         }
-        Utils.matToBitmap(cannedImage, bm);
+
 
         return grayImage;
     }
@@ -134,8 +132,6 @@ public class CV_Paper {
         Imgproc.Canny(grayImage, cannedImage, 100, 200);
 
 
-        Bitmap bm = Bitmap.createBitmap(cannedImage.cols(), cannedImage.rows(),Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(cannedImage, bm);
         return cannedImage;
     }
 

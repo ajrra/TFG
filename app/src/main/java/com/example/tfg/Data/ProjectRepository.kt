@@ -20,9 +20,12 @@ class ProjectRepository(private val projectDao: ProjectDao, private val pageDao:
 
      fun addPage(page: Page) = pageDao.insertPage(page)
 
-
+fun getAnswerFromPage(id: Int) = answerDao.getAllAnswersFromPage(id)
 
     fun deleteProject(project: Project){
         projectDao.deleteProject(project)
     }
+
+    fun addAnswer(answer: Answer){
+        answerDao.insertAnswer(answer)    }
 }

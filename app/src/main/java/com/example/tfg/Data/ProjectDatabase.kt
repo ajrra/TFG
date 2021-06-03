@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
 @Database(entities = [Project::class, Page::class, Answer::class], version = 1, exportSchema = false)
-@TypeConverters(convertidor::class)
+@TypeConverters(RectFConverter::class, BooleanListConverter::class)
 abstract class ProjectDatabase : RoomDatabase(){
 
     abstract fun projectDao(): ProjectDao

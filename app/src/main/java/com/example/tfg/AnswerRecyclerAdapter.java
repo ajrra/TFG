@@ -23,7 +23,7 @@ public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAd
 
     private static final String TAG = "projectRecyclerAdapter";
     private List<Answer> mAnswers = new ArrayList<>();
-    private LocalStorageAccess localStorage ;
+    private final LocalStorageAccess localStorage ;
 
 
     public AnswerRecyclerAdapter(LocalStorageAccess localStorage) {
@@ -62,7 +62,7 @@ public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAd
     public List<Answer> getAnswers(){
         return mAnswers;
     }
-
+    public Answer getAnswerAt(int i){return mAnswers.get(i);}
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 

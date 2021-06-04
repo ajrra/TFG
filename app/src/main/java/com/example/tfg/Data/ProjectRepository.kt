@@ -8,9 +8,8 @@ class ProjectRepository(private val projectDao: ProjectDao, private val pageDao:
     val getAllProjects: LiveData<List<Project>> = projectDao.getAllProjects()
     val getAllPages: LiveData<List<Page>> = pageDao.getAllPages()
     val getAll : LiveData<List<ProjectAndAll>> = projectDao.getAllProjectsComplete()
-    val getAllAnswer : LiveData<List<Answer>> = answerDao.getAllAnswers()
 
-     fun addProject(project: Project):Long = projectDao.insertProject(project)
+    fun addProject(project: Project):Long = projectDao.insertProject(project)
 
      fun getProject(id:Int ): Project {
         return projectDao.getProject(id)
@@ -28,4 +27,7 @@ fun getAnswerFromPage(id: Int) = answerDao.getAllAnswersFromPage(id)
 
     fun addAnswer(answer: Answer){
         answerDao.insertAnswer(answer)    }
+    fun deleteAnswer(answer: Answer){
+        answerDao.deleteAnswer(answer)
+    }
 }

@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -134,6 +135,9 @@ private void saveAnswers (){
             mNew.value = new ArrayList<>();
             mNew.value.addAll(answerBools);
             mProjectViewModel.insertAnswer(mNew);
+            answerBools.removeAll(answerBools);
+            Toast.makeText(this,"Respuestas Guardadas", Toast.LENGTH_SHORT).show();
+            imageView.invalidate();
         }
     }
 

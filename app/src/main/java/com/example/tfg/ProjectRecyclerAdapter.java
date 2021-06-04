@@ -21,7 +21,7 @@ public class ProjectRecyclerAdapter extends RecyclerView.Adapter<ProjectRecycler
     private static final String TAG = "projectRecyclerAdapter";
     private OnItemClickListener listener;
     private List<Project> mProjects = new ArrayList<>();
-    private LocalStorageAccess localStorage ;
+    private final LocalStorageAccess localStorage ;
 
 
     public ProjectRecyclerAdapter(LocalStorageAccess localStorage) {

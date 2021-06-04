@@ -3,17 +3,16 @@ package com.example.tfg.Data
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
- class ProjectViewModel(application: Application): AndroidViewModel(application) {
-    public val  allProject : LiveData<List<Project>>
-    public val allData  : LiveData<List<ProjectAndAll>>
-    public val allPage : LiveData<List<Page>>
+class ProjectViewModel(application: Application): AndroidViewModel(application) {
+    val  allProject : LiveData<List<Project>>
+    private val allData  : LiveData<List<ProjectAndAll>>
+    private val allPage : LiveData<List<Page>>
     private val repository : ProjectRepository
-    public val localStorageAccess   : LocalStorageAccess
+    val localStorageAccess   : LocalStorageAccess
 
     init{
         val database =ProjectDatabase.getDatabase(application)
@@ -27,11 +26,7 @@ import kotlinx.coroutines.launch
         allData = repository.getAll
     }
 
-     fun getProject(id : Int): Project{
-         return repository.getProject(id)
-     }
-
-     fun getAllProject(id:Int) = repository.getProjectAll(id)
+    fun getAllProject(id:Int) = repository.getProjectAll(id)
 
     fun addProject(project: Project):Long{
         //need this on main thread
@@ -40,6 +35,12 @@ import kotlinx.coroutines.launch
      fun addPage(page:Page){
          viewModelScope.launch(Dispatchers.IO) { repository.addPage(page) }
 
+     }
+
+
+     fun deleteAnswer(answer: Answer){
+
+         viewModelScope.launch(Dispatchers.IO) { repository.deleteAnswer(answer)}
      }
 
      fun deleteProject(project: Project){

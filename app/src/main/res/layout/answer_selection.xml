@@ -20,6 +20,6 @@
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
         android:contentDescription="submit"
-        />
+        android:src="@android:drawable/ic_menu_share" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

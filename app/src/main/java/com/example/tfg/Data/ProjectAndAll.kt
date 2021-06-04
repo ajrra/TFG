@@ -11,9 +11,7 @@ class ProjectAndAll() : Parcelable{
     @Relation(parentColumn = "id", entityColumn = "Project_fk", entity = Page::class)
     var listPagesAndAnswers: List<PagesAndAnswers>? = null
 
-    constructor(parcel: Parcel) : this() {
-
-    }
+    constructor(parcel: Parcel) : this()
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
 

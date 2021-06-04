@@ -9,7 +9,6 @@ import com.example.tfg.Data.Page;
 import com.example.tfg.Data.Project;
 import android.graphics.PointF;
 import android.graphics.RectF;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -20,7 +19,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -29,17 +27,12 @@ import com.example.tfg.Data.ProjectViewModel;
 import com.example.tfg.Views.RectSubSamplingScaleImage;
 import com.google.android.material.textfield.TextInputEditText;
 
-import org.opencv.android.BaseLoaderCallback;
-import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 
-import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 public class PerspectiveAdjustedActivity extends AppCompatActivity {
 
@@ -171,7 +164,7 @@ private void popRect(){
      LocalStorageAccess localDao = new LocalStorageAccess(getApplicationContext());
 
 
-    page.img =   localDao.saveToInternalSorage(bm,nProject.name );
+    page.img =   localDao.saveToInternalStorage(bm,nProject.name );
 
 
      nProject.id= (int)mProjectViewModel.addProject(nProject);

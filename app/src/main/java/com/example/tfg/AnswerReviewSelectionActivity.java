@@ -133,9 +133,9 @@ public class AnswerReviewSelectionActivity extends AppCompatActivity
                         switch (which){
                             case DialogInterface.BUTTON_POSITIVE:
                                 //Yes button clicked
-                                //Project actual = mNoteRecyclerAdapter.getProjectAt(  viewHolder.getAdapterPosition());
-                                //mProjectViewModel.deleteProject(actual);
-                                //   mProjectViewModel.getLocalStorageAccess().deleteImageFromStorage(actual.name);
+                                Answer actual = mNoteRecyclerAdapter.getAnswerAt(  viewHolder.getAdapterPosition());
+                                mProjectViewModel.deleteAnswer(actual);
+
                                 Toast.makeText(AnswerReviewSelectionActivity.this,"Delete", Toast.LENGTH_SHORT).show();
                                 break;
 

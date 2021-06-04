@@ -19,8 +19,8 @@ class BooleanListConverter {
         var value = ""
         for(i in list)
         {
-            if(i) value += "T"
-            else value += "F"
+            value += if(i) "T"
+            else "F"
         }
         return value
     }

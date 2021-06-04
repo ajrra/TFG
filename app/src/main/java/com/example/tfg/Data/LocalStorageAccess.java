@@ -20,7 +20,7 @@ public class LocalStorageAccess {
         this.cw = new ContextWrapper(context);
     }
 
-    public String saveToInternalSorage(Bitmap bitmapImage, String name) {
+    public String saveToInternalStorage(Bitmap bitmapImage, String name) {
 
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
         // Create imageDir

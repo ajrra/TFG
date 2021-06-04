@@ -32,7 +32,7 @@ public class ProjectSelectionActivity  extends AppCompatActivity
     // vars
     private ProjectRecyclerAdapter mNoteRecyclerAdapter;
     private ProjectViewModel mProjectViewModel;
-    private int MODE;
+
 
 
     @Override
@@ -41,7 +41,7 @@ public class ProjectSelectionActivity  extends AppCompatActivity
         mProjectViewModel = new ViewModelProvider(this).get(ProjectViewModel.class);
         setContentView(R.layout.project_select_activity);
         mRecyclerView = findViewById(R.id.recycler_view);
-        MODE = getIntent().getIntExtra("MODE",100);
+
 
         initRecyclerView();
 

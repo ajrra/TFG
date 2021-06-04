@@ -1,7 +1,6 @@
 <resources>
-    <string name="app_name">TFG</string>
-    <string name="button1">Nueva Encuesta</string>
-    <string name="button2">Analizar Encuesta</string>
-    <string name="button3">Ver Encuestas</string>
-    <string name="buttonTakePhoto">Camara</string>
+    <string name="app_name">Digitalizador De Encuestas</string>
+    <string name="button1">Generar Template</string>
+    <string name="button2">Registrar Respuestas</string>
+    <string name="button3">Exportar Datos</string>
 </resources>

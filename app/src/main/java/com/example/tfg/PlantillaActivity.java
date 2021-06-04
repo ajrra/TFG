@@ -46,15 +46,10 @@ public class PlantillaActivity extends AppCompatActivity implements CameraBridge
     BaseLoaderCallback baseLoaderCallback = new BaseLoaderCallback(PlantillaActivity.this) {
         @Override
         public void onManagerConnected(int status) {
-            switch (status) {
-                case BaseLoaderCallback.SUCCESS: {
-                    mOpenCvCameraView.enableView();
-                    break;
-                }
-                default: {
-                    super.onManagerConnected(status);
-                    break;
-                }
+            if (status == BaseLoaderCallback.SUCCESS) {
+                mOpenCvCameraView.enableView();
+            } else {
+                super.onManagerConnected(status);
             }
         }
     };
@@ -85,7 +80,7 @@ public class PlantillaActivity extends AppCompatActivity implements CameraBridge
                     Core.rotate(tmp,tmp,Core.ROTATE_180);
                     Bitmap bm = Bitmap.createBitmap(tmp.cols(), tmp.rows(), Bitmap.Config.ARGB_8888);
                     Utils.matToBitmap(tmp, bm);
-                    next.putExtra("image",mProjectViewModel.getLocalStorageAccess().saveToInternalSorage(bm,"opencv_mat"));
+                    next.putExtra("image",mProjectViewModel.getLocalStorageAccess().saveToInternalStorage(bm,"opencv_mat"));
                     setResult(Activity.RESULT_OK, next);
                     finish();
                 }

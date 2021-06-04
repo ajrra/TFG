@@ -8,9 +8,10 @@ class XcelConverter {
         var value = ""
         for(i in list)
         {
-            if(i) value += "1,"
-            else value += "0,"
+            value += if(i) "1,"
+            else "0,"
         }
+        value =value.dropLast(1);
         value +="\n"
         return value
     }

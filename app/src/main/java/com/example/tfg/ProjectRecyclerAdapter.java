@@ -40,7 +40,7 @@ public class ProjectRecyclerAdapter extends RecyclerView.Adapter<ProjectRecycler
         try{
             Project actual = mProjects.get(position);
             holder.projectName.setText(actual.name);
-            holder.imagePage.setImageBitmap(localStorage.loadImageFromStorage(actual.name));
+            holder.imagePage.setImageBitmap(localStorage.loadImageFromStorage(actual.name+"_"+actual.id));
 
         }catch (NullPointerException e){
             Log.e(TAG, "onBindViewHolder: Null Pointer: " + e.getMessage() );

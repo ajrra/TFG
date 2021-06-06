@@ -17,6 +17,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Toast;
 
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -146,9 +147,8 @@ private void popRect(){
     class SaveButtonClick implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-
             saveData();
-           next();
+
 
         }
     }
@@ -160,20 +160,22 @@ private void popRect(){
      Project nProject = new Project();
      Page page = new Page();
      nProject.name =text.getText().toString();
-
+    nProject.name.trim();
+    if(nProject.name.isEmpty()){
+        Toast.makeText(this,"Empty title",Toast.LENGTH_SHORT).show();return;}
      LocalStorageAccess localDao = new LocalStorageAccess(getApplicationContext());
 
 
-    page.img =   localDao.saveToInternalStorage(bm,nProject.name );
+
 
 
      nProject.id= (int)mProjectViewModel.addProject(nProject);
-
+     page.img =   localDao.saveToInternalStorage(bm,nProject.name+"_"+nProject.id );
 
      page.quizL= quizL;
      page.Project_fk = nProject.id;
      mProjectViewModel.addPage(page);
-
+    finish();
  }
 
 
@@ -193,12 +195,7 @@ private void popRect(){
         finish();
     }
 
-    void next(){
-     Intent go = new Intent(this, MainActivity.class);
-     go.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-     startActivity(go);
 
- }
 
 
 }

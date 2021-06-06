@@ -19,13 +19,8 @@ import static org.junit.Assert.*;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 public class ExampleUnitTest {
-    static {
-        System.loadLibrary("opencv_java3");
-    }
 
-
-
-        @Test
+    @Test
     public void addition_isCorrect() {
         int w = 500, h = 500;
 

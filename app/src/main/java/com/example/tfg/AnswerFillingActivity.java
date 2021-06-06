@@ -110,7 +110,7 @@ public class AnswerFillingActivity  extends AppCompatActivity {
         text = this.findViewById(R.id.answer_project_name);
         text.setText(actual.getProject().name);
 
-        bm = mProjectViewModel.getLocalStorageAccess().loadImageFromStorage(actual.getProject().name);
+        bm = mProjectViewModel.getLocalStorageAccess().loadImageFromStorage(actual.getProject().name+"_"+actual.getProject().id);
 
 
         mProjectViewModel = new ViewModelProvider(this).get(ProjectViewModel.class);

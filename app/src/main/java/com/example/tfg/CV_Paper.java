@@ -125,11 +125,11 @@ public class CV_Paper {
         Imgproc.adaptiveThreshold(grayImage,grayImage,255,Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,Imgproc.THRESH_BINARY,115, 4);
 
         //APLICAMOS UNA DIFUMINACION PARA MEJORAR
-      //  Imgproc.GaussianBlur(grayImage,grayImage,new Size(5,5),0);
+        Imgproc.GaussianBlur(grayImage,grayImage,new Size(5,5),0);
         Imgproc.dilate(grayImage,grayImage, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3,3)));
         Core.copyMakeBorder(grayImage,grayImage,5,5,5,5,Core.BORDER_CONSTANT);
         //ALGORITMO CANNY DE DETECCION DE BORDES
-        Imgproc.Canny(grayImage, cannedImage, 100, 200);
+        Imgproc.Canny(grayImage, cannedImage, 50, 200);
 
 
         return cannedImage;
@@ -174,8 +174,8 @@ public class CV_Paper {
          Quadrilateral tmp = null;
          Mat cdst = dst.clone();
          Mat lines = new Mat();
-       Imgproc.HoughLines(src, lines, 1, Math.PI/180, 150);// runs the actual detection
-       // Draw the lines
+       Imgproc.HoughLines(src, lines, 1, Math.PI/180, 150);
+
        for (int x = 0; x < lines.rows(); x++) {
            double rho = lines.get(x, 0)[0],
                    theta = lines.get(x, 0)[1];

@@ -15,14 +15,14 @@ import java.io.FileOutputStream;
 public class LocalStorageAccess {
 
     ContextWrapper cw;
-
+    static private String  dir = "imageDir";
     public LocalStorageAccess(Context context) {
         this.cw = new ContextWrapper(context);
     }
 
     public String saveToInternalStorage(Bitmap bitmapImage, String name) {
 
-        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        File directory = cw.getDir(dir, Context.MODE_PRIVATE);
         // Create imageDir
         File mypath = new File(directory, name+".png");
 
@@ -44,7 +44,7 @@ public class LocalStorageAccess {
 
 
     public void deleteImageFromStorage(String name){
-            File path1 = cw.getDir("imageDir", Context.MODE_PRIVATE);
+            File path1 = cw.getDir(dir, Context.MODE_PRIVATE);
             File f = new File(path1, name+".png");
             f.delete();
 

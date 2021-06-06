@@ -3,6 +3,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id "org.jetbrains.kotlin.kapt"
+
 }
 
 android {
@@ -44,6 +45,16 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
+    sourceSets {
+        test {
+            resources.srcDirs += ['src/test/resources']
+        }
+        androidTest {
+            assets.srcDirs = ['src/main/assets', 'src/androidTest/assets/', 'src/debug/assets/']
+            java.srcDirs = ['src/main/java', 'src/androidTest/java', 'src/debug/java']
+        }
+    }
+
 }
 
 
@@ -85,4 +96,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.21"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1"
+
+
+
 }

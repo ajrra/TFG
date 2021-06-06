@@ -24,14 +24,5 @@ public class ExampleUnitTest {
     public void addition_isCorrect() {
         int w = 500, h = 500;
 
-        Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
-        Bitmap bmp = Bitmap.createBitmap(w, h, conf);
-        Mat m = new Mat();
-        Bitmap bm32 = bmp.copy(Bitmap.Config.ARGB_8888,true);
-        Utils.bitmapToMat(bm32,m);
-
-        assertNotNull(m);
-
-
     }
 }

@@ -15,7 +15,16 @@ import java.io.FileOutputStream;
 public class LocalStorageAccess {
 
     ContextWrapper cw;
-    static private String  dir = "imageDir";
+    private String  dir = "imageDir";
+    public String getDir() {
+        return dir;
+    }
+
+    public void setDir(String dir) {
+        this.dir = dir;
+    }
+
+
     public LocalStorageAccess(Context context) {
         this.cw = new ContextWrapper(context);
     }

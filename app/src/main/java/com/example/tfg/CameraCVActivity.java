@@ -32,7 +32,7 @@ import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
 
-public class PlantillaActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
+public class CameraCVActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
     // Used for logging success or failure messages
     private static final String TAG = "OCVSample::Activity";
 
@@ -43,7 +43,7 @@ public class PlantillaActivity extends AppCompatActivity implements CameraBridge
     Mat mRGBA, mRGBAT;
     Quadrilateral quad;
 
-    BaseLoaderCallback baseLoaderCallback = new BaseLoaderCallback(PlantillaActivity.this) {
+    BaseLoaderCallback baseLoaderCallback = new BaseLoaderCallback(CameraCVActivity.this) {
         @Override
         public void onManagerConnected(int status) {
             if (status == BaseLoaderCallback.SUCCESS) {
@@ -69,7 +69,7 @@ public class PlantillaActivity extends AppCompatActivity implements CameraBridge
         mOpenCvCameraView = (JavaCameraView) findViewById(R.id.show_camera_activity_java_surface_view);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
-
+        mOpenCvCameraView.setMaxFrameSize(720,1280);
         Button nextButton = (Button) this.findViewById(R.id.button);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override

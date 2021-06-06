@@ -3,14 +3,9 @@ package com.example.tfg;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.PointF;
 import android.graphics.RectF;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -18,31 +13,23 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultCaller;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.example.tfg.Data.Answer;
 import com.example.tfg.Data.Page;
-import com.example.tfg.Data.Project;
 import com.example.tfg.Data.ProjectAndAll;
 import com.example.tfg.Data.ProjectViewModel;
 import com.example.tfg.Views.RectSubSamplingScaleImage;
 import com.google.android.material.textfield.TextInputEditText;
 
-import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
-import org.opencv.core.Size;
-import org.opencv.imgproc.Imgproc;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class AnswerFillingActivity  extends AppCompatActivity {
 
@@ -66,12 +53,12 @@ public class AnswerFillingActivity  extends AppCompatActivity {
                         actual_photo_answer = new Mat();
                         Bitmap bm32 = bm.copy(Bitmap.Config.ARGB_8888,true);
                         Utils.bitmapToMat(bm32,actual_photo_answer);
-                        actual_photo_answer = CV_Paper.preprocess_item(actual_photo_answer);
-                        Imgproc.erode(actual_photo_answer,actual_photo_answer, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3,3)));
+                        actual_photo_answer = CV_Paper.preprocess_answer(actual_photo_answer);
+
                         bm = Bitmap.createBitmap(actual_photo_answer.cols(), actual_photo_answer.rows(),Bitmap.Config.ARGB_8888);
                         Utils.matToBitmap(actual_photo_answer, bm);
                         imageView.setImage(ImageSource.bitmap(bm));
-                        OpenCVLoader.initDebug();
+
                         // Handle the Intent
                     }
                 }
@@ -90,7 +77,7 @@ public class AnswerFillingActivity  extends AppCompatActivity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 Log.i("answerfilling", "called onClick");
-                Intent i = new Intent(getApplicationContext(), PlantillaActivity.class);
+                Intent i = new Intent(getApplicationContext(), CameraCVActivity.class);
                 mStartForResult.launch(i);
 
 
@@ -143,6 +130,7 @@ private void saveAnswers (){
 
 
     private void evalItem(){
+        if(actual_photo_answer==null)return;
         answerBools = new ArrayList();
         for (RectF x : imageView.rectangles){
                 answerBools.add(CV_Paper.Eval(actual_photo_answer, x));

@@ -31,7 +31,7 @@ public class CV_Paper {
 
 
 
-//Compara la version pre procesada de las dos matrices para
+
     public static boolean Eval(Mat src, RectF comp){
 
         Point ofs = new Point();
@@ -61,11 +61,15 @@ public class CV_Paper {
         Point p_4 = new Point(boundingBox.left, boundingBox.bottom);
         Rect bTemp =  new Rect(p_4, p_2);
         Mat temp = new Mat (m , bTemp);
-
+        Bitmap bm = Bitmap.createBitmap(temp.cols(), temp.rows(),Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(temp, bm);
 
         temp.locateROI(m.size(),ofs);
+      bm = Bitmap.createBitmap(temp.cols(), temp.rows(),Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(temp, bm);
         temp = CV_Paper.preprocess_item(temp);
-
+       bm = Bitmap.createBitmap(temp.cols(), temp.rows(),Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(temp, bm);
         ArrayList<MatOfPoint> contours = findCountour(temp, ofs);
 
        Quadrilateral quad = getQuadrilateral(contours,temp.size(),ofs);
@@ -79,29 +83,63 @@ public class CV_Paper {
     }
 
 
+    public static Mat preprocess_answer(Mat src){
+        Imgproc.cvtColor(src, src, Imgproc.COLOR_RGBA2BGR);
+        Size size = src.size();
+        Mat grayImage = new Mat(size, CvType.CV_8UC4);
+        Mat cannedImage = new Mat(size, CvType.CV_8UC1);
+
+        //APLICAMOS UN FILTRO QUE MANTENGA BORDES PARA REDUCIR RUIDO Y SUAVIZAR LA IMAGEN
+        Imgproc.cvtColor(src, grayImage, Imgproc.COLOR_RGBA2BGR);
+        Mat dst = grayImage.clone();
+        Imgproc.bilateralFilter(grayImage, dst, 9, 75, 75, Core.BORDER_DEFAULT);
+        Imgproc.cvtColor(dst, dst, Imgproc.COLOR_RGB2RGBA);
+        //PASAMOS A GRIS PARA TRABAJAR MEJOR
+        Imgproc.cvtColor(dst, grayImage, Imgproc.COLOR_RGBA2GRAY, 4);
+
+        //APLICAMOS UN THRESHOLD ADAPTATIVO PARA ELIMINAR SOMBRAS
+        Imgproc.adaptiveThreshold(grayImage,grayImage,255,Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,Imgproc.THRESH_BINARY,115, 4);
+
+        //APLICAMOS UNA DIFUMINACION PARA MEJORAR
+        //Imgproc.GaussianBlur(grayImage,grayImage,new Size(5,5),0);
+        Imgproc.dilate(grayImage,grayImage, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3,3)));
+        //Core.copyMakeBorder(grayImage,grayImage,5,5,5,5,Core.BORDER_CONSTANT);
+        //ALGORITMO CANNY DE DETECCION DE BORDES
+        //Imgproc.Canny(grayImage, cannedImage, 50, 200);
+
+        return grayImage;
+
+
+    }
+
+
     public static Mat preprocess_item(Mat src){
         Imgproc.cvtColor(src, src, Imgproc.COLOR_RGBA2BGR);
         Size size = src.size();
         Mat grayImage = new Mat(size, CvType.CV_8UC4);
         Mat cannedImage = new Mat(size, CvType.CV_8UC1);
 
+        //APLICAMOS UN FILTRO QUE MANTENGA BORDES PARA REDUCIR RUIDO Y SUAVIZAR LA IMAGEN
         Imgproc.cvtColor(src, grayImage, Imgproc.COLOR_RGBA2BGR);
         Mat dst = grayImage.clone();
         Imgproc.bilateralFilter(grayImage, dst, 9, 75, 75, Core.BORDER_DEFAULT);
-
         Imgproc.cvtColor(dst, dst, Imgproc.COLOR_RGB2RGBA);
+        //PASAMOS A GRIS PARA TRABAJAR MEJOR
         Imgproc.cvtColor(dst, grayImage, Imgproc.COLOR_RGBA2GRAY, 4);
-
+        Bitmap bm = Bitmap.createBitmap(grayImage.cols(), grayImage.rows(),Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(grayImage, bm);
         //APLICAMOS UN THRESHOLD ADAPTATIVO PARA ELIMINAR SOMBRAS
-        Imgproc.adaptiveThreshold(grayImage,grayImage,255,Imgproc.ADAPTIVE_THRESH_MEAN_C,Imgproc.THRESH_BINARY,25, 15);
+        Imgproc.adaptiveThreshold(grayImage,grayImage,255,Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,Imgproc.THRESH_BINARY,115, 4);
+    bm = Bitmap.createBitmap(grayImage.cols(), grayImage.rows(),Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(grayImage, bm);
+        //APLICAMOS UNA DIFUMINACION PARA MEJORAR
+        Imgproc.GaussianBlur(grayImage,grayImage,new Size(5,5),0);
+        Imgproc.dilate(grayImage,grayImage, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3,3)));
+        //Core.copyMakeBorder(grayImage,grayImage,5,5,5,5,Core.BORDER_CONSTANT);
+        //ALGORITMO CANNY DE DETECCION DE BORDES
+        Imgproc.Canny(grayImage, cannedImage, 50, 200);
 
-        for (int i =0 ; i<0 ; i++){
-            Imgproc.dilate(grayImage,grayImage, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3,3)));
-
-        }
-
-
-        return grayImage;
+        return cannedImage;
     }
 
 
@@ -130,7 +168,8 @@ public class CV_Paper {
         Core.copyMakeBorder(grayImage,grayImage,5,5,5,5,Core.BORDER_CONSTANT);
         //ALGORITMO CANNY DE DETECCION DE BORDES
         Imgproc.Canny(grayImage, cannedImage, 50, 200);
-
+        Bitmap bm = Bitmap.createBitmap(cannedImage.cols(), cannedImage.rows(),Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(cannedImage, bm);
 
         return cannedImage;
     }
@@ -261,11 +300,11 @@ public class CV_Paper {
     }
     private static boolean insideArea(Point[] rp, Size size,Point ofs) {
 
-        if(ofs.x > 0 ) return true;
 
-        int width = Double.valueOf(size.width).intValue() +(int)ofs.x;
-        int height = Double.valueOf(size.height).intValue()+(int)ofs.y;
-        int baseMeasure = height/4;
+        if(ofs.x >0)return true;
+        int width = Double.valueOf(size.width).intValue() ;
+        int height = Double.valueOf(size.height).intValue();
+        int baseMeasure = height/3;
 
         int bottomPos = height-baseMeasure;
         int topPos = baseMeasure ;
@@ -273,10 +312,10 @@ public class CV_Paper {
         int rightPos = width/2+baseMeasure;
 
         return (
-                rp[0].x <= leftPos && rp[0].y <= topPos
-                        && rp[1].x >= rightPos && rp[1].y <= topPos
-                        && rp[2].x>= rightPos && rp[2].y >= bottomPos
-                        && rp[3].x <= leftPos && rp[3].y >= bottomPos
+                rp[0].x -(int)ofs.x <= leftPos && rp[0].y-(int)ofs.y <= topPos
+                        && rp[1].x -(int)ofs.x >= rightPos && rp[1].y-(int)ofs.y <= topPos
+                        && rp[2].x -(int)ofs.x >= rightPos && rp[2].y-(int)ofs.y >= bottomPos
+                        && rp[3].x -(int)ofs.x<= leftPos && rp[3].y-(int)ofs.y >= bottomPos
 
         );
     }

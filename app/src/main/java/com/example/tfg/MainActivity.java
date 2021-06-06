@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -18,18 +17,9 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
-import com.davemorrissey.labs.subscaleview.ImageSource;
-
-import org.opencv.android.Utils;
-import org.opencv.core.Mat;
-import org.opencv.core.Size;
-import org.opencv.imgproc.Imgproc;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -111,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 Log.i("MainActivity", "called onClick");
-                Intent i = new Intent(getApplicationContext(), PlantillaActivity.class);
+                Intent i = new Intent(getApplicationContext(), CameraCVActivity.class);
                 mStartForResult.launch(i);
             }
         });

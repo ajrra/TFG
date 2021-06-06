@@ -26,6 +26,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
@@ -68,22 +69,50 @@ public class openCV_tests {
         }
     }
 
+
+
+
+
+
     @Test
-    public void test_3() throws IOException {
+    public void test_4() throws IOException {
+        RectF roi = new RectF(250,180,280,140);
         int i =1;
-        for(i=1;i<24;i++) {
+        for(i=1;i<20;i++) {
             Context ctx = InstrumentationRegistry.getInstrumentation().getContext();
             InputStream is = ctx.getResources().getAssets().open("Test" + i + ".jpg");
             Bitmap bm = BitmapFactory.decodeStream(is);
             Mat m = new Mat();
             Bitmap bm32 = bm.copy(Bitmap.Config.ARGB_8888,true);
             Utils.bitmapToMat(bm32,m);
-            RectF newAdd = CV_Paper.adjustItemTemplate(m,new RectF(460,750,510,700));
+            RectF newAdd = CV_Paper.adjustItemTemplate(m,roi);
             if(newAdd == null){
                 fail();
             }
+        }
+    }
+    @Test
+    public void test_5() throws IOException {
+        RectF roi = new RectF(250,180,280,140);
+        boolean[] vals = {false,false,false,true ,false ,true ,false ,true ,false ,false ,true,
+                false ,false ,true,true ,true ,false ,false ,true ,false};
+        int i =1;
+        for(i=1;i<20;i++) {
+            Context ctx = InstrumentationRegistry.getInstrumentation().getContext();
+            InputStream is = ctx.getResources().getAssets().open("Test" + i + ".jpg");
+            Bitmap bm = BitmapFactory.decodeStream(is);
+            Mat m = new Mat();
+            Bitmap bm32 = bm.copy(Bitmap.Config.ARGB_8888,true);
+            Utils.bitmapToMat(bm32,m);
+            RectF newAdd = CV_Paper.adjustItemTemplate(m,roi);
+            if(newAdd == null){
+                fail();
+            }
+            m = CV_Paper.preprocess_answer(m);
+            assertEquals(CV_Paper.Eval(m,newAdd),vals[i-1]);
 
 
         }
     }
 }
+

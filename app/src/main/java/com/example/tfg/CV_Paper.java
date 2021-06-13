@@ -3,6 +3,8 @@ package com.example.tfg;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 
+import com.example.tfg.Data.Quadrilateral;
+
 import org.jetbrains.annotations.Nullable;
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
@@ -12,7 +14,6 @@ import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
@@ -146,29 +147,35 @@ public class CV_Paper {
 
 
     public static Mat preprocess(Mat src){
-        Imgproc.cvtColor(src, src, Imgproc.COLOR_RGBA2BGR);
+        Imgproc.cvtColor(src, src, Imgproc.COLOR_RGBA2RGB);
         Size size = src.size();
         Mat grayImage = new Mat(size, CvType.CV_8UC4);
         Mat cannedImage = new Mat(size, CvType.CV_8UC1);
-
+        Bitmap bm = Bitmap.createBitmap(src.cols(), src.rows(),Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(src, bm);
         //APLICAMOS UN FILTRO QUE MANTENGA BORDES PARA REDUCIR RUIDO Y SUAVIZAR LA IMAGEN
         Imgproc.cvtColor(src, grayImage, Imgproc.COLOR_RGBA2BGR);
         Mat dst = grayImage.clone();
         Imgproc.bilateralFilter(grayImage, dst, 9, 75, 75, Core.BORDER_DEFAULT);
+        bm = Bitmap.createBitmap(dst.cols(), dst.rows(),Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(grayImage, bm);
         Imgproc.cvtColor(dst, dst, Imgproc.COLOR_RGB2RGBA);
         //PASAMOS A GRIS PARA TRABAJAR MEJOR
         Imgproc.cvtColor(dst, grayImage, Imgproc.COLOR_RGBA2GRAY, 4);
 
         //APLICAMOS UN THRESHOLD ADAPTATIVO PARA ELIMINAR SOMBRAS
         Imgproc.adaptiveThreshold(grayImage,grayImage,255,Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,Imgproc.THRESH_BINARY,115, 4);
-
+        Utils.matToBitmap(grayImage, bm);
         //APLICAMOS UNA DIFUMINACION PARA MEJORAR
         Imgproc.GaussianBlur(grayImage,grayImage,new Size(5,5),0);
+        Utils.matToBitmap(grayImage, bm);
         Imgproc.dilate(grayImage,grayImage, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3,3)));
+        Utils.matToBitmap(grayImage, bm);
         Core.copyMakeBorder(grayImage,grayImage,5,5,5,5,Core.BORDER_CONSTANT);
+
         //ALGORITMO CANNY DE DETECCION DE BORDES
         Imgproc.Canny(grayImage, cannedImage, 50, 200);
-        Bitmap bm = Bitmap.createBitmap(cannedImage.cols(), cannedImage.rows(),Bitmap.Config.ARGB_8888);
+        bm = Bitmap.createBitmap(cannedImage.cols(), cannedImage.rows(),Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(cannedImage, bm);
 
         return cannedImage;

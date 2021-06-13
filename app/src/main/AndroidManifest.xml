@@ -46,6 +46,7 @@
         <activity android:name=".ProjectSelectionActivity" />
         <activity android:name=".AnswerFillingActivity" />
         <activity android:name=".AnswerReviewSelectionActivity" />
+        <activity android:name=".AboutActivity" />
     </application>
     <!--Declaring the required permissions-->
 

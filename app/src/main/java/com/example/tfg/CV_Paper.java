@@ -1,12 +1,11 @@
 package com.example.tfg;
 
-import android.graphics.Bitmap;
 import android.graphics.RectF;
 
 import com.example.tfg.Data.Quadrilateral;
 
 import org.jetbrains.annotations.Nullable;
-import org.opencv.android.Utils;
+
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -62,15 +61,11 @@ public class CV_Paper {
         Point p_4 = new Point(boundingBox.left, boundingBox.bottom);
         Rect bTemp =  new Rect(p_4, p_2);
         Mat temp = new Mat (m , bTemp);
-        Bitmap bm = Bitmap.createBitmap(temp.cols(), temp.rows(),Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(temp, bm);
 
         temp.locateROI(m.size(),ofs);
-      bm = Bitmap.createBitmap(temp.cols(), temp.rows(),Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(temp, bm);
+
         temp = CV_Paper.preprocess_item(temp);
-       bm = Bitmap.createBitmap(temp.cols(), temp.rows(),Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(temp, bm);
+
         ArrayList<MatOfPoint> contours = findCountour(temp, ofs);
 
        Quadrilateral quad = getQuadrilateral(contours,temp.size(),ofs);
@@ -99,7 +94,7 @@ public class CV_Paper {
         Imgproc.cvtColor(dst, grayImage, Imgproc.COLOR_RGBA2GRAY, 4);
 
         //APLICAMOS UN THRESHOLD ADAPTATIVO PARA ELIMINAR SOMBRAS
-        Imgproc.adaptiveThreshold(grayImage,grayImage,255,Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,Imgproc.THRESH_BINARY,115, 4);
+        Imgproc.adaptiveThreshold(grayImage,grayImage,255,Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,Imgproc.THRESH_BINARY,115, 20);
 
         //APLICAMOS UNA DIFUMINACION PARA MEJORAR
         //Imgproc.GaussianBlur(grayImage,grayImage,new Size(5,5),0);
@@ -127,12 +122,10 @@ public class CV_Paper {
         Imgproc.cvtColor(dst, dst, Imgproc.COLOR_RGB2RGBA);
         //PASAMOS A GRIS PARA TRABAJAR MEJOR
         Imgproc.cvtColor(dst, grayImage, Imgproc.COLOR_RGBA2GRAY, 4);
-        Bitmap bm = Bitmap.createBitmap(grayImage.cols(), grayImage.rows(),Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(grayImage, bm);
+
         //APLICAMOS UN THRESHOLD ADAPTATIVO PARA ELIMINAR SOMBRAS
-        Imgproc.adaptiveThreshold(grayImage,grayImage,255,Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,Imgproc.THRESH_BINARY,115, 4);
-    bm = Bitmap.createBitmap(grayImage.cols(), grayImage.rows(),Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(grayImage, bm);
+        Imgproc.adaptiveThreshold(grayImage,grayImage,255,Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,Imgproc.THRESH_BINARY,115, 20);
+
         //APLICAMOS UNA DIFUMINACION PARA MEJORAR
         Imgproc.GaussianBlur(grayImage,grayImage,new Size(5,5),0);
         Imgproc.dilate(grayImage,grayImage, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3,3)));
@@ -151,32 +144,29 @@ public class CV_Paper {
         Size size = src.size();
         Mat grayImage = new Mat(size, CvType.CV_8UC4);
         Mat cannedImage = new Mat(size, CvType.CV_8UC1);
-        Bitmap bm = Bitmap.createBitmap(src.cols(), src.rows(),Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(src, bm);
+
         //APLICAMOS UN FILTRO QUE MANTENGA BORDES PARA REDUCIR RUIDO Y SUAVIZAR LA IMAGEN
         Imgproc.cvtColor(src, grayImage, Imgproc.COLOR_RGBA2BGR);
         Mat dst = grayImage.clone();
         Imgproc.bilateralFilter(grayImage, dst, 9, 75, 75, Core.BORDER_DEFAULT);
-        bm = Bitmap.createBitmap(dst.cols(), dst.rows(),Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(grayImage, bm);
+
         Imgproc.cvtColor(dst, dst, Imgproc.COLOR_RGB2RGBA);
         //PASAMOS A GRIS PARA TRABAJAR MEJOR
         Imgproc.cvtColor(dst, grayImage, Imgproc.COLOR_RGBA2GRAY, 4);
 
         //APLICAMOS UN THRESHOLD ADAPTATIVO PARA ELIMINAR SOMBRAS
-        Imgproc.adaptiveThreshold(grayImage,grayImage,255,Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,Imgproc.THRESH_BINARY,115, 4);
-        Utils.matToBitmap(grayImage, bm);
+        Imgproc.adaptiveThreshold(grayImage,grayImage,255,Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,Imgproc.THRESH_BINARY,115, 20);
+
         //APLICAMOS UNA DIFUMINACION PARA MEJORAR
         Imgproc.GaussianBlur(grayImage,grayImage,new Size(5,5),0);
-        Utils.matToBitmap(grayImage, bm);
+
         Imgproc.dilate(grayImage,grayImage, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3,3)));
-        Utils.matToBitmap(grayImage, bm);
+
         Core.copyMakeBorder(grayImage,grayImage,5,5,5,5,Core.BORDER_CONSTANT);
 
         //ALGORITMO CANNY DE DETECCION DE BORDES
         Imgproc.Canny(grayImage, cannedImage, 50, 200);
-        bm = Bitmap.createBitmap(cannedImage.cols(), cannedImage.rows(),Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(cannedImage, bm);
+
 
         return cannedImage;
     }

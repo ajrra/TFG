@@ -114,5 +114,27 @@ public class openCV_tests {
 
         }
     }
+
+    @Test
+    public void test_6() throws IOException {
+
+
+        int i =1;
+        for(i=1;i<20;i++) {
+            Context ctx = InstrumentationRegistry.getInstrumentation().getContext();
+            InputStream is = ctx.getResources().getAssets().open("Test" + i + ".jpg");
+            Bitmap bm = BitmapFactory.decodeStream(is);
+            Mat m = new Mat();
+            Bitmap bm32 = bm.copy(Bitmap.Config.ARGB_8888,true);
+            Utils.bitmapToMat(bm32,m);
+            long start = System.currentTimeMillis();
+            CV_Paper.preprocess(m);
+            long end = System.currentTimeMillis();
+            Assert.assertTrue(end-start<100);
+
+        }
+    }
+
+
 }
 

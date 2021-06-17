@@ -17,7 +17,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.TFG">
+        android:theme="@style/Theme.TFG"
+        android:screenOrientation="portrait">
 
         <provider
             android:authorities="com.example.tfg.fileprovider"
@@ -41,12 +42,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CameraCVActivity"  />
-        <activity android:name=".PerspectiveAdjustedActivity" />
-        <activity android:name=".ProjectSelectionActivity" />
-        <activity android:name=".AnswerFillingActivity" />
-        <activity android:name=".AnswerReviewSelectionActivity" />
-        <activity android:name=".AboutActivity" />
+        <activity android:name=".CameraCVActivity"  android:screenOrientation="portrait"/>
+        <activity android:name=".PerspectiveAdjustedActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ProjectSelectionActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".AnswerFillingActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".AnswerReviewSelectionActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".AboutActivity" android:screenOrientation="portrait"/>
     </application>
     <!--Declaring the required permissions-->
 

@@ -61,7 +61,7 @@ public class openCV_tests {
     @Test
     public void test_2() throws IOException {
         int i =1;
-        for(i=1;i<24;i++) {
+        for(i=1;i<20;i++) {
             Context ctx = InstrumentationRegistry.getInstrumentation().getContext();
             InputStream is = ctx.getResources().getAssets().open("Test" + i + ".jpg");
             Bitmap bm = BitmapFactory.decodeStream(is);
@@ -130,7 +130,7 @@ public class openCV_tests {
             long start = System.currentTimeMillis();
             CV_Paper.preprocess(m);
             long end = System.currentTimeMillis();
-            Assert.assertTrue(end-start<100);
+            Assert.assertTrue(end-start<75);
 
         }
     }

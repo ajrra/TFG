@@ -139,14 +139,21 @@ public class DaoTest {
 
 
     }
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_Read_Project_ID_2(){
+        Assert.assertNull(  projectDao.getProject(2));
+    }
+    @Test(expected = NullPointerException.class)
+    public void test_Read_Project_ID_3(){
         Project prop = new Project ();
         prop.name = "prop";
         Integer  id= null;
         projectDao.insertProject(prop);
         projectDao.getProject(id);
     }
+
+
+
 
     @Test
     public void test_Insert_Page_1(){
@@ -205,10 +212,29 @@ public class DaoTest {
             }
         });
 
-        Assert.assertEquals(size[0],1);
 
     }
+    //no FK_from project to Page
+    @Test(expected = SQLiteConstraintException.class)
+    public void test_Insert_Page_3(){
+        //PREPARE
 
+        final int[] size = new int[1];
+
+        Page newPage = new Page();
+        newPage.img = "sss";
+        newPage.quizL = new ArrayList<>();
+        newPage.Project_fk=10;
+
+        pageDao.insertPage(newPage);
+        pageDao.getAllPages().observeForever( new  Observer<List<Page>>() {
+            @Override
+            public void onChanged(List<Page> page) {
+                size[0] = page.size();
+            }
+        });
+
+    }
 
 
 

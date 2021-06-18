@@ -63,7 +63,7 @@ public class DaoTest {
     }
 
     @Test
-    public void test_1_Get_Projects(){
+    public void UT_1_Get_Projects(){
         final int[] size = new int[1];
 
         projectDao.getAllProjects().observeForever( new  Observer<List<Project>>() {
@@ -76,7 +76,7 @@ public class DaoTest {
         Assert.assertEquals(size[0],0);
     }
     @Test
-    public void test_SaveProject_1(){
+    public void UT_2_1_test_SaveProject_1(){
 
         Project prop = new Project ();
         prop.name = "prop";
@@ -97,7 +97,7 @@ public class DaoTest {
     }
 
     @Test
-    public void test_SaveProject_2(){
+    public void UT_2_2_test_SaveProject_2(){
 
         Project prop = new Project ();
 
@@ -118,7 +118,7 @@ public class DaoTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void test_SaveProject_3(){
+    public void UT_2_3_test_SaveProject_3(){
         Project prop= null;
         projectDao.insertProject(prop);
     }
@@ -127,7 +127,7 @@ public class DaoTest {
 
 
     @Test
-    public void test_Read_Project_ID_1(){
+    public void UT_3_1_test_Read_Project_ID_1(){
         Project prop = new Project ();
         prop.name = "prop";
 
@@ -140,11 +140,11 @@ public class DaoTest {
 
     }
     @Test
-    public void test_Read_Project_ID_2(){
+    public void UT_3_2_test_Read_Project_ID_2(){
         Assert.assertNull(  projectDao.getProject(2));
     }
     @Test(expected = NullPointerException.class)
-    public void test_Read_Project_ID_3(){
+    public void UT_3_3_test_Read_Project_ID_3(){
         Project prop = new Project ();
         prop.name = "prop";
         Integer  id= null;
@@ -156,7 +156,7 @@ public class DaoTest {
 
 
     @Test
-    public void test_Insert_Page_1(){
+    public void UT_4_1_test_Insert_Page_1(){
         //PREPARE
         Project prop = new Project ();
         prop.name = "prop";
@@ -187,7 +187,7 @@ public class DaoTest {
     }
     //no FK_from project to Page
     @Test(expected = SQLiteConstraintException.class)
-    public void test_Insert_Page_2(){
+    public void UT_4_2_test_Insert_Page_2(){
         //PREPARE
         Project prop = new Project ();
         prop.name = "prop";
@@ -216,7 +216,7 @@ public class DaoTest {
     }
     //no FK_from project to Page
     @Test(expected = SQLiteConstraintException.class)
-    public void test_Insert_Page_3(){
+    public void UT_4_3_test_Insert_Page_3(){
         //PREPARE
 
         final int[] size = new int[1];
@@ -239,7 +239,7 @@ public class DaoTest {
 
 
     @Test
-    public void test_Insert_Answer_1()
+    public void UT_5_1_test_Insert_Answer_1()
     {
         //PREPARE
         Project prop = new Project ();
@@ -279,7 +279,7 @@ public class DaoTest {
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void test_Insert_Answer_2()
+    public void UT_5_2_test_Insert_Answer_2()
     {
         //PREPARE
         final int[] size = new int[1];
@@ -299,7 +299,7 @@ public class DaoTest {
 
 
     @Test
-    public void test_Delete_Project_1(){
+    public void UT_6_1_test_Delete_Project_1(){
         Project prop = new Project ();
         prop.name = "prop";
 //TEST2
@@ -330,7 +330,7 @@ public class DaoTest {
 
 
     @Test
-    public void test_Delete_Project_2(){
+    public void UT_6_2test_Delete_Project_2(){
         Project prop = new Project ();
         prop.name = "prop";
         prop.id =  (int)projectDao.insertProject(prop);
@@ -383,7 +383,7 @@ public class DaoTest {
 
 
     @Test(expected = NullPointerException.class)
-    public void test_Delete_Project_3(){
+    public void UT_6_3_test_Delete_Project_3(){
         Project prop = null;
         projectDao.deleteProject(prop);
 

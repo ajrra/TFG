@@ -43,7 +43,7 @@ public class openCV_tests {
 
 
     @Test
-    public void test_1 (){
+    public void UT_8_1test_1 (){
 
 
         Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
@@ -52,14 +52,14 @@ public class openCV_tests {
         Bitmap bm32 = bmp.copy(Bitmap.Config.ARGB_8888,true);
         Utils.bitmapToMat(bm32,m);
 
-        assertNotNull(m);
+        assertEquals(m.width(),720);
 
     }
 
 
 //READ IMAGES
     @Test
-    public void test_2() throws IOException {
+    public void UT_8_2_test_2() throws IOException {
         int i =1;
         for(i=1;i<20;i++) {
             Context ctx = InstrumentationRegistry.getInstrumentation().getContext();
@@ -75,7 +75,7 @@ public class openCV_tests {
 
 
     @Test
-    public void test_4() throws IOException {
+    public void UT_9_1_test_4() throws IOException {
         RectF roi = new RectF(250,180,280,140);
         int i =1;
         for(i=1;i<20;i++) {
@@ -92,7 +92,7 @@ public class openCV_tests {
         }
     }
     @Test
-    public void test_5() throws IOException {
+    public void UT_9_2_test_5() throws IOException {
         RectF roi = new RectF(250,180,280,140);
         boolean[] vals = {false,false,false,true ,false ,true ,false ,true ,false ,false ,true,
                 false ,false ,true,true ,true ,false ,false ,true ,false};
@@ -116,7 +116,7 @@ public class openCV_tests {
     }
 
     @Test
-    public void test_6() throws IOException {
+    public void UT_9_3_test_6() throws IOException {
 
 
         int i =1;

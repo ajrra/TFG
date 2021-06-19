@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.RectF;
+import android.util.Log;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -129,8 +130,10 @@ public class openCV_tests {
             Utils.bitmapToMat(bm32,m);
             long start = System.currentTimeMillis();
             CV_Paper.preprocess(m);
-            long end = System.currentTimeMillis();
-            Assert.assertTrue(end-start<75);
+            long end = System.currentTimeMillis(); Log.d("OPENCV", "UT_9_3_test_6: "+ (end-start));
+            //inicializacion de variables nativas.
+            if(i>1) Assert.assertTrue(end-start<60);
+
 
         }
     }

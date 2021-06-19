@@ -175,7 +175,7 @@ public class CV_Paper {
         ArrayList<MatOfPoint> contours = new ArrayList<>();
         Mat hierarchy = new Mat();
 
-        Imgproc.findContours(src, contours, hierarchy, Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE,ofs);
+        Imgproc.findContours(src, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE,ofs);
         Collections.sort(contours, (lhs, rhs) -> Double.valueOf(Imgproc.contourArea(lhs)).compareTo(Imgproc.contourArea(rhs)));
 
         return  contours;
@@ -268,16 +268,16 @@ public class CV_Paper {
 
         Comparator<Point> sumComparator = new Comparator<Point>() {
             @Override
-            public int compare(Point lhs, Point rhs) {
-                return Double.valueOf(lhs.y + lhs.x).compareTo(rhs.y + rhs.x);
+            public int compare(Point l, Point r) {
+                return Double.valueOf(l.y + l.x).compareTo(r.y + r.x);
             }
         };
 
         Comparator<Point> diffComparator = new Comparator<Point>() {
 
             @Override
-            public int compare(Point lhs, Point rhs) {
-                return Double.valueOf(lhs.y - lhs.x).compareTo(rhs.y - rhs.x);
+            public int compare(Point l, Point r) {
+                return Double.valueOf(l.y - l.x).compareTo(r.y - r.x);
             }
         };
 

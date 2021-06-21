@@ -1,11 +1,13 @@
 package com.example.tfg;
 
+import android.graphics.Bitmap;
 import android.graphics.RectF;
 
 import com.example.tfg.Data.Quadrilateral;
 
 import org.jetbrains.annotations.Nullable;
 
+import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -145,25 +147,21 @@ public class CV_Paper {
         Mat grayImage = new Mat(size, CvType.CV_8UC4);
         Mat cannedImage = new Mat(size, CvType.CV_8UC1);
 
+
         //APLICAMOS UN FILTRO QUE MANTENGA BORDES PARA REDUCIR RUIDO Y SUAVIZAR LA IMAGEN
         Imgproc.cvtColor(src, grayImage, Imgproc.COLOR_RGBA2BGR);
         Mat dst = grayImage.clone();
-        Imgproc.bilateralFilter(grayImage, dst, 9, 75, 75, Core.BORDER_DEFAULT);
-
+        Imgproc.bilateralFilter(grayImage, dst, 20, 75, 75, Core.BORDER_DEFAULT);
         Imgproc.cvtColor(dst, dst, Imgproc.COLOR_RGB2RGBA);
         //PASAMOS A GRIS PARA TRABAJAR MEJOR
         Imgproc.cvtColor(dst, grayImage, Imgproc.COLOR_RGBA2GRAY, 4);
-
         //APLICAMOS UN THRESHOLD ADAPTATIVO PARA ELIMINAR SOMBRAS
-        Imgproc.adaptiveThreshold(grayImage,grayImage,255,Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,Imgproc.THRESH_BINARY,115, 20);
-
+        Imgproc.adaptiveThreshold(grayImage,grayImage,255,Imgproc.ADAPTIVE_THRESH_MEAN_C,Imgproc.THRESH_BINARY,115, 20);
         //APLICAMOS UNA DIFUMINACION PARA MEJORAR
         Imgproc.GaussianBlur(grayImage,grayImage,new Size(5,5),0);
-
         Imgproc.dilate(grayImage,grayImage, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3,3)));
-
+        Imgproc.erode(grayImage,grayImage, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3,3)));
         Core.copyMakeBorder(grayImage,grayImage,5,5,5,5,Core.BORDER_CONSTANT);
-
         //ALGORITMO CANNY DE DETECCION DE BORDES
         Imgproc.Canny(grayImage, cannedImage, 50, 200);
 
@@ -175,7 +173,7 @@ public class CV_Paper {
         ArrayList<MatOfPoint> contours = new ArrayList<>();
         Mat hierarchy = new Mat();
 
-        Imgproc.findContours(src, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE,ofs);
+        Imgproc.findContours(src, contours, hierarchy, Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE,ofs);
         Collections.sort(contours, (lhs, rhs) -> Double.valueOf(Imgproc.contourArea(lhs)).compareTo(Imgproc.contourArea(rhs)));
 
         return  contours;

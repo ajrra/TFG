@@ -9,6 +9,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -84,7 +85,8 @@ public class CameraCVActivity extends AppCompatActivity implements CameraBridgeV
                     next.putExtra("image",mProjectViewModel.getLocalStorageAccess().saveToInternalStorage(bm,"opencv_mat"));
                     setResult(Activity.RESULT_OK, next);
                     finish();
-                }
+                }else{
+                    Toast.makeText(CameraCVActivity.this,"Documento no identificado", Toast.LENGTH_SHORT).show();}
             }
         });
     }

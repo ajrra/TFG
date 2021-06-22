@@ -250,9 +250,9 @@ public class CV_Paper {
 
             Point[] points = approx.toArray();
 
-            // select biggest 4 angles polygon
+            // select POLIGONO DE ALMENOS 4 ANGULOS
             if (points.length >= 4 && Imgproc.isContourConvex(new MatOfPoint(approx.toArray()))) {
-                Point[] foundPoints = sortPoints(points);
+                Point[] foundPoints = sortPoints(points);//SELECCIONAMOS 4 EXTREMOS
                 if(ofs.x!=0 && ofs.y!=0){
                     double val = Imgproc.contourArea((Mat) c);
                     if ( val > srcSize.area()*0.1) {

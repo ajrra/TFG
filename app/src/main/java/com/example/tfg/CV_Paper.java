@@ -116,26 +116,33 @@ public class CV_Paper {
         Size size = src.size();
         Mat grayImage = new Mat(size, CvType.CV_8UC4);
         Mat cannedImage = new Mat(size, CvType.CV_8UC1);
-
+        Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
+        Bitmap bmp = Bitmap.createBitmap(src.width(), src.height(), conf);
+        Utils.matToBitmap(src,bmp);
         //APLICAMOS UN FILTRO QUE MANTENGA BORDES PARA REDUCIR RUIDO Y SUAVIZAR LA IMAGEN
         Imgproc.cvtColor(src, grayImage, Imgproc.COLOR_RGBA2BGR);
         Mat dst = grayImage.clone();
-        Imgproc.bilateralFilter(grayImage, dst, 9, 75, 75, Core.BORDER_DEFAULT);
+        Imgproc.bilateralFilter(grayImage, dst, -1, 75, 75, Core.BORDER_DEFAULT);
+        Utils.matToBitmap(dst,bmp);
         Imgproc.cvtColor(dst, dst, Imgproc.COLOR_RGB2RGBA);
         //PASAMOS A GRIS PARA TRABAJAR MEJOR
         Imgproc.cvtColor(dst, grayImage, Imgproc.COLOR_RGBA2GRAY, 4);
 
         //APLICAMOS UN THRESHOLD ADAPTATIVO PARA ELIMINAR SOMBRAS
-        Imgproc.adaptiveThreshold(grayImage,grayImage,255,Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,Imgproc.THRESH_BINARY,115, 20);
-
+        Imgproc.adaptiveThreshold(grayImage,grayImage,255,Imgproc.ADAPTIVE_THRESH_MEAN_C,Imgproc.THRESH_BINARY,25, 4);
+        Utils.matToBitmap(grayImage,bmp);
         //APLICAMOS UNA DIFUMINACION PARA MEJORAR
-        Imgproc.GaussianBlur(grayImage,grayImage,new Size(5,5),0);
-        Imgproc.dilate(grayImage,grayImage, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3,3)));
+        //Imgproc.GaussianBlur(grayImage,grayImage,new Size(5,5),0);
+        Imgproc.erode(grayImage,grayImage, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3,3)));
+
+        Utils.matToBitmap(grayImage,bmp);
         //Core.copyMakeBorder(grayImage,grayImage,5,5,5,5,Core.BORDER_CONSTANT);
         //ALGORITMO CANNY DE DETECCION DE BORDES
-        Imgproc.Canny(grayImage, cannedImage, 50, 200);
+        Imgproc.Canny(grayImage, grayImage, 20, 120);
 
-        return cannedImage;
+        Utils.matToBitmap(grayImage,bmp);
+
+        return grayImage;
     }
 
 
@@ -246,7 +253,12 @@ public class CV_Paper {
             // select biggest 4 angles polygon
             if (points.length >= 4 && Imgproc.isContourConvex(new MatOfPoint(approx.toArray()))) {
                 Point[] foundPoints = sortPoints(points);
-
+                if(ofs.x!=0 && ofs.y!=0){
+                    double val = Imgproc.contourArea((Mat) c);
+                    if ( val > srcSize.area()*0.1) {
+                        return new Quadrilateral(c, foundPoints);
+                    }
+                }
                 if(insideArea(foundPoints,srcSize,ofs))
                 return new Quadrilateral(c, foundPoints);
             }
@@ -296,16 +308,16 @@ public class CV_Paper {
     private static boolean insideArea(Point[] rp, Size size,Point ofs) {
 
 
-        if(ofs.x >0)return true;
+
         int width = Double.valueOf(size.width).intValue() ;
         int height = Double.valueOf(size.height).intValue();
-        int baseMeasure = height/3;
+        int baseMeasure = height/4;
 
         int bottomPos = height-baseMeasure;
         int topPos = baseMeasure ;
         int leftPos = width/2-baseMeasure ;
         int rightPos = width/2+baseMeasure;
-
+        //if(ofs.x >0)return true;
         return (
                 rp[0].x -(int)ofs.x <= leftPos && rp[0].y-(int)ofs.y <= topPos
                         && rp[1].x -(int)ofs.x >= rightPos && rp[1].y-(int)ofs.y <= topPos

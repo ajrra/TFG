@@ -1,13 +1,11 @@
 package com.example.tfg;
 
-import android.graphics.Bitmap;
 import android.graphics.RectF;
 
 import com.example.tfg.Data.Quadrilateral;
 
 import org.jetbrains.annotations.Nullable;
 
-import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -42,7 +40,6 @@ public class CV_Paper {
         Rect bTemp =  new Rect(p_4, p_2);
         Mat temp = new Mat (src , bTemp);
         temp.locateROI(src.size(),ofs);
-
 
 
 
@@ -85,7 +82,7 @@ public class CV_Paper {
         Imgproc.cvtColor(src, src, Imgproc.COLOR_RGBA2BGR);
         Size size = src.size();
         Mat grayImage = new Mat(size, CvType.CV_8UC4);
-        Mat cannedImage = new Mat(size, CvType.CV_8UC1);
+       // Mat cannedImage = new Mat(size, CvType.CV_8UC1);
 
         //APLICAMOS UN FILTRO QUE MANTENGA BORDES PARA REDUCIR RUIDO Y SUAVIZAR LA IMAGEN
         Imgproc.cvtColor(src, grayImage, Imgproc.COLOR_RGBA2BGR);
@@ -115,32 +112,29 @@ public class CV_Paper {
         Imgproc.cvtColor(src, src, Imgproc.COLOR_RGBA2BGR);
         Size size = src.size();
         Mat grayImage = new Mat(size, CvType.CV_8UC4);
-        Mat cannedImage = new Mat(size, CvType.CV_8UC1);
-        Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
-        Bitmap bmp = Bitmap.createBitmap(src.width(), src.height(), conf);
-        Utils.matToBitmap(src,bmp);
+       // Mat cannedImage = new Mat(size, CvType.CV_8UC1);
         //APLICAMOS UN FILTRO QUE MANTENGA BORDES PARA REDUCIR RUIDO Y SUAVIZAR LA IMAGEN
         Imgproc.cvtColor(src, grayImage, Imgproc.COLOR_RGBA2BGR);
         Mat dst = grayImage.clone();
         Imgproc.bilateralFilter(grayImage, dst, -1, 75, 75, Core.BORDER_DEFAULT);
-        Utils.matToBitmap(dst,bmp);
+       // Utils.matToBitmap(dst,bmp);
         Imgproc.cvtColor(dst, dst, Imgproc.COLOR_RGB2RGBA);
         //PASAMOS A GRIS PARA TRABAJAR MEJOR
         Imgproc.cvtColor(dst, grayImage, Imgproc.COLOR_RGBA2GRAY, 4);
 
         //APLICAMOS UN THRESHOLD ADAPTATIVO PARA ELIMINAR SOMBRAS
         Imgproc.adaptiveThreshold(grayImage,grayImage,255,Imgproc.ADAPTIVE_THRESH_MEAN_C,Imgproc.THRESH_BINARY,25, 4);
-        Utils.matToBitmap(grayImage,bmp);
+     //   Utils.matToBitmap(grayImage,bmp);
         //APLICAMOS UNA DIFUMINACION PARA MEJORAR
         //Imgproc.GaussianBlur(grayImage,grayImage,new Size(5,5),0);
         Imgproc.erode(grayImage,grayImage, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3,3)));
 
-        Utils.matToBitmap(grayImage,bmp);
+      //  Utils.matToBitmap(grayImage,bmp);
         //Core.copyMakeBorder(grayImage,grayImage,5,5,5,5,Core.BORDER_CONSTANT);
         //ALGORITMO CANNY DE DETECCION DE BORDES
         Imgproc.Canny(grayImage, grayImage, 20, 120);
 
-        Utils.matToBitmap(grayImage,bmp);
+        //Utils.matToBitmap(grayImage,bmp);
 
         return grayImage;
     }
@@ -158,7 +152,7 @@ public class CV_Paper {
         //APLICAMOS UN FILTRO QUE MANTENGA BORDES PARA REDUCIR RUIDO Y SUAVIZAR LA IMAGEN
         Imgproc.cvtColor(src, grayImage, Imgproc.COLOR_RGBA2BGR);
         Mat dst = grayImage.clone();
-        Imgproc.bilateralFilter(grayImage, dst, 20, 75, 75, Core.BORDER_DEFAULT);
+        Imgproc.bilateralFilter(grayImage, dst, 9, 75, 75, Core.BORDER_DEFAULT);
         Imgproc.cvtColor(dst, dst, Imgproc.COLOR_RGB2RGBA);
         //PASAMOS A GRIS PARA TRABAJAR MEJOR
         Imgproc.cvtColor(dst, grayImage, Imgproc.COLOR_RGBA2GRAY, 4);
@@ -211,25 +205,6 @@ public class CV_Paper {
     }
 
 
-  /* public static Mat houghFind(Mat dst,Mat src){
-         Quadrilateral tmp = null;
-         Mat cdst = dst.clone();
-         Mat lines = new Mat();
-       Imgproc.HoughLines(src, lines, 1, Math.PI/180, 150);
-
-       for (int x = 0; x < lines.rows(); x++) {
-           double rho = lines.get(x, 0)[0],
-                   theta = lines.get(x, 0)[1];
-           double a = Math.cos(theta), b = Math.sin(theta);
-           double x0 = a*rho, y0 = b*rho;
-           Point pt1 = new Point(Math.round(x0 + 1000*(-b)), Math.round(y0 + 1000*(a)));
-           Point pt2 = new Point(Math.round(x0 - 1000*(-b)), Math.round(y0 - 1000*(a)));
-           Imgproc.line(cdst, pt1, pt2, new Scalar(0, 0, 255), 3, Imgproc.LINE_AA, 0);
-       }
-       return cdst;
-   }
-
-*/
 
     private static ArrayList<MatOfPoint> findContours(Mat resizedImage, Size size, Point ofs) {
 
@@ -239,6 +214,16 @@ public class CV_Paper {
         ArrayList<MatOfPoint> con = findCountour(resizedImage,ofs);
         return con;
     }
+
+    /*
+    * Copyright 2016 - Claudemir Todo Bom
+    * Software licensed under the GPL version 3 available in GPLv3.TXT and online on http://www.gnu.org/licenses/gpl.txt.
+    * Use parts from other developers, sometimes with small changes, references on autorship and specific licenses are on individual source files.
+    * Código modificado a partir de sturkmen72
+    * https://github.com/ctodobom/OpenNoteScanner.git
+    *
+    *  */
+
 
     @Nullable
     private static Quadrilateral getQuadrilateral(ArrayList<MatOfPoint> contours, Size srcSize,Point ofs) {
